@@ -17,7 +17,8 @@ from common import Request, Response
 
 class Coordinator(process):
 
-    def setup(coordinators:list, database, config):
+    def setup(coordinators, database, config):
+        '''
         self.logger = logging.getLogger('sLogger')
 
         self.exit = False
@@ -39,22 +40,27 @@ class Coordinator(process):
         
         # Each coordinator intantiates its own workers
         # It is one as of now
+        '''
         self.worker_index   = 0
-        num_worker = int(config.get("setup", "num_worker_per_coord"))
+
+        num_worker = 1 #int(config.get("setup", "num_worker_per_coord"))
 
         workers_set     = new(Worker, num = num_worker)
         self.workers    = list(workers_set)
-        setup(self.workers, (coordinators, database, config))
+        setup(self.workers, (coordinators, database))
         start(workers)
-
+    '''
     def run():
+
         # Await till exit is issued by the master 
+    
         await(received(('EXIT',)))
-            
+        '''    
         logger.info("Exiting the Coordinators")
         # Issue await to the clients
         send(('EXIT',), to=(workers))
-
+        '''
+    '''
     def attributes_in_sync(map1, map2): 
 
         # Timestamp for the cache entries should be same
@@ -426,3 +432,4 @@ class Coordinator(process):
 
             entrypoint(response.request)
             extract_next_response()
+        '''

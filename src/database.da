@@ -115,4 +115,5 @@ class Database(process):
     def receive(msg=('FROM_COORDINATOR_ATTR_UPDATE', attributes_to_update)):
         logger.debug("[Database Emulator] Receiving updates {0} from coordinator to commit to db".
                     format(attributes_to_update))
+
         threading.Timer(randvalue, commit_to_db, [attributes_to_update]).start()

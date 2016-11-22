@@ -1,0 +1,115 @@
+import logging
+import logging.handlers
+import logging.config
+import hashlib
+import random
+
+import time
+from time import sleep
+
+from common import Request, Response
+
+class Client(process):
+	
+	def setup(coordinators, my_index, config):
+		self.logger = logging.getLogger('sLogger')
+
+		current_section = "client" + str(my_index)
+		
+		request_list = []
+
+		if (config.options(current_section)):
+			sequence = config.get(current_section, "sequence")
+			if(sequence == "random"):
+				number_requests_to_generate = int(config.get(current_section, "number_requests_to_generate"))
+				request_list = config.get(current_section, "request_list")
+				request_list = request_list.split(",")
+				seed_value = int(config.get(current_section, "seed_value"))
+				random.seed(seed_value)
+				random_requests = []
+				for x in range(0,number_requests_to_generate):
+					index = random.randrange(0,len(request_list)-1)
+					random_requests.append(request_list[index])
+
+				request_list = random_requests
+			else:
+				request_list = sequence.split(",")
+		else:
+			sequence = None
+			request_list = []
+
+		self.total_requests = []
+
+		self.num_requests = len(request_list)
+		self.current_request_index = 0
+
+		self.send_sequence = 1
+		self.recv_sequence = 1
+
+		for i in request_list:
+			sub_id = int(config.get(i, "subject_id"))
+			res_id = int(config.get(i, "resource_id"))
+			action = str(config.get(i, "action"))
+			
+			art_delay = 0
+			res_delay = 0
+
+			try:
+				art_delay = float(config.get(i, "art_delay"))
+				res_delay = float(config.get(i, "resource_delay"))
+			except:
+				pass
+			
+			uuid = hashlib.md5()
+			uuid.update(str(sub_id).encode())
+			uuid.update(str(res_id).encode())
+			uuid.update(str(action).encode())
+			uuid.update(str(time.time()).encode())
+			uuid.update(str(my_index).encode())
+
+			request = Request(sub_id, res_id, action)
+			request.art_delay = art_delay
+			request.res_delay = res_delay
+
+			request.uuid = uuid.hexdigest()
+
+			total_requests.append(request)
+		
+
+	def sendtask():
+		
+		request = total_requests[current_request_index]
+
+		rid = request.subject_id % len(coordinators)
+
+		logger.info("[Client] Request sent (UUID: {0}) to Subject Coord"
+			.format(request.uuid))
+		logger.debug("[Client] Request sent (seq. {0}) to Subject Coord {1}"
+			.format(send_sequence, request))
+
+		recv_sequence = recv_sequence + 1
+
+		send(('FROM_CLIENT', request),to=(coordinators[rid]))
+
+	def run():
+
+		sleep(my_index / 100.0)
+
+		sendtask()
+		
+		await(num_requests == current_request_index)
+
+	def receive(msg=('OUTCOME', response), from_ = p):
+
+		logger.info("[Client] Final Response received (UUID: {0}) from Subject Coord With Result: {1}"
+			.format(response.request.uuid, response.result))
+		logger.debug("[Client] Response received (seq. {0}) from Subject Coord {1}"
+			.format(recv_sequence, response))
+
+		recv_sequence = recv_sequence + 1
+		
+		current_request_index  = current_request_index + 1
+
+		if (num_requests > current_request_index):
+			sendtask()
+

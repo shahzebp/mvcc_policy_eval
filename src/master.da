@@ -7,32 +7,6 @@ import da
 
 from database import Database
 
-
-class Pong(process):
-    def setup(total_pings:int):
-        output("pong setup")
-
-    def run():
-        a = False
-        await(len(listof(p, received(('Ping',), from_=p))) == total_pings)
-
-    def receive(msg=('Ping',), from_=p):
-        output("Pinged")
-        send(('Pong',), to=p)
-
-class Ping(process):
-    def setup(p:Pong, nrounds:int):
-        output("ping setup")
-
-    def run():
-        for i in range(nrounds):
-            clk = logical_clock()
-            send(('Ping',), to=p)
-            await(some(received(('Pong',), clk=rclk), has=(rclk > clk)))
-
-    def receive(msg=('Pong',)):
-        output("Ponged.")
-
 def main():
     '''
     # set up logging
@@ -67,11 +41,6 @@ def main():
     #database_init_file = str(config.get("setup", "database_init_file"))
     setup(database, (1,))
     start(database)
-    
-    nrounds = 3
-    npings = 3
-    config(clock='Lamport')
-    pong = new(Pong, [nrounds * npings], num= 1)
 
     '''
     # creating coordinators

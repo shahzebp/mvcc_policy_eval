@@ -1,0 +1,282 @@
+import xml.etree.ElementTree as ET
+from common import Request, Response, Rule
+from time import sleep
+import logging
+import logging.handlers
+import logging.config
+
+import operator
+
+class Worker(process):
+    def setup(coordinators:list, database, config):
+        self.logger = logging.getLogger('sLogger')
+        self.exit = False
+        self.coordinators = coordinators
+        self.policy_map = {}
+        self.database = database
+        self.send_sequence = 1
+        self.recv_sequence = 1
+        policy_file = config.get("setup", "policy_def_file")
+
+        read_policy(policy_file)
+
+    def does_attribute_value_satisfy_condition(value_in_policy, value_from_db):
+        if(len(value_in_policy) == 0 and len(value_from_db) == 0):
+            return True
+        if(len(value_in_policy) == 0 and len(value_from_db) != 0):
+            return False
+        if value_in_policy[0] == '>' or value_in_policy[0] == "<":
+            ops = { ">": operator.gt, "<": operator.lt}
+            integer_value_in_policy = int(value_in_policy[1:])
+            try:
+                integer_value_from_db = int(value_from_db)
+                if ops[value_in_policy[0]](integer_value_from_db, integer_value_in_policy):
+                    return True
+                else:
+                    return False
+            except:
+                return False
+        if value_in_policy != value_from_db:
+            return False
+        else:
+            return True
+
+    def evaluate(value,
+                sub_attribute_list_to_evaluate_policy,
+                res_attribute_list_to_evaluate_policy):
+        dependency = value[1:].split('.')[0]
+        attr_name = value[1:].split('.')[1]
+        if dependency == "subject":
+            return sub_attribute_list_to_evaluate_policy[attr_name][0]
+        else:
+            return res_attribute_list_to_evaluate_policy[attr_name][0]
+
+    def validate_attributes_in_policy(rule_map,
+                                      db_attributes_map,
+                                      request_tentative_updates,
+                                      sub_attribute_list_to_evaluate_policy,
+                                      res_attribute_list_to_evaluate_policy):
+
+        if len(rule_map) == 0 or len(db_attributes_map) == 0:
+            return (False, None, None)
+
+        key_size = len(rule_map.keys())
+        count = 0
+        attributes_used_from_tent = {}
+        attributes_used_from_db = {}
+        
+        for key in rule_map.keys():
+            if key in db_attributes_map:
+
+
+                """
+                Here we evalaute all attibutes which have $ symbols in the value
+                """
+                if rule_map[key] != None and len(rule_map[key]) > 0 and rule_map[key][0] == '$':
+                    rule_map[key] = evaluate(rule_map[key],
+                                        sub_attribute_list_to_evaluate_policy,
+                                        res_attribute_list_to_evaluate_policy)
+                """"
+                Here we check for the value of the attributes
+                In case we have < or > operators, we need to evaluate accordingly
+                """
+                if does_attribute_value_satisfy_condition(rule_map[key], db_attributes_map[key][0]):
+                    count+=1
+                else:
+                    break
+            else:
+                break
+
+        if count != key_size:
+            return (False, attributes_used_from_tent, attributes_used_from_db)
+        else:
+            for key in rule_map.keys():
+                if db_attributes_map[key][1] == 0:
+                    attributes_used_from_tent[key] = request_tentative_updates[key]
+                else:
+                    attributes_used_from_db[key] = db_attributes_map[key][0]
+            
+            return (True, attributes_used_from_tent, attributes_used_from_db)
+
+    def update_attributes_after_policy_evaluation(update_condition,
+                                attribute_list_to_evaluate_policy,
+                                sub_attribute_list_to_evaluate_policy,
+                                res_attribute_list_to_evaluate_policy):
+        to_update = {}
+        if update_condition:
+            for key, value in update_condition.items():
+                if value == "++":
+                    to_update[key] = str(int(attribute_list_to_evaluate_policy[key][0]) + 1)
+                elif value == "--":
+                    to_update[key] = str(int(attribute_list_to_evaluate_policy[key][0]) - 1)
+                elif value != None and len(value) > 0 and value[0] == '$':
+                    to_update[key] = evaluate(update_condition[key],
+                                        sub_attribute_list_to_evaluate_policy,
+                                        res_attribute_list_to_evaluate_policy)
+                else:
+                    to_update[key] = update_condition[key]
+        return to_update
+
+    def read_policy(policy_xml):
+        tree = ET.parse(policy_xml)
+        root = tree.getroot()
+        for rule in root.iter('rule'):
+            sc=rule.find('subjectCondition').attrib
+            rc=rule.find('resourceCondition').attrib
+            act=rule.find('action').attrib
+            su=rule.find('subjectUpdate')
+            if su != None:
+                su = su.attrib
+            ru=rule.find('resourceUpdate')
+            if ru != None:
+                ru = ru.attrib
+
+            rule_object = Rule(sc, rc, act, su, ru)
+
+            """
+            Adding the Rule object to the action map.
+            So each action will have a list of Rule objects
+            that satisfy that action.
+            """
+            if act["name"] in self.policy_map.keys():
+                self.policy_map[act["name"]].append(rule_object)
+            else:
+                self.policy_map[act["name"]] = [rule_object]
+
+    def run():
+        await(received(('EXIT',)))
+        logger.info("Exiting the Workers")
+
+    def receive(msg=('FROM_RECEIVE_COORD', request), from_ = p):
+        logger.info("[Worker] Receiving request (UUID: {0}) from Resource Coordinator"
+            .format(request.uuid))
+        logger.debug("[Worker] Receiving request (seq. {0}) from Resource Coordinator: {1}"
+            .format(recv_sequence, request))
+
+        recv_sequence += 1
+        logger.info("[Worker] Sending request (UUID: {0}) to Database Emulator"
+            .format(request.uuid))
+        logger.debug("[Worker] Sending request (seq. {0}) to Database Emulator: {1}"
+            .format(send_sequence, request))
+        send_sequence += 1
+        send(('FROM_WORKER', request), to = (database))
+        
+    def receive(msg=('FROM_DATABASE', database_response), from_ = p):
+        logger.info("[Worker] Receiving response (UUID: {0}) from Database Emulator"
+            .format(database_response.request.uuid))
+        logger.debug("[Worker] Receiving response (seq. {0}) from Database Emulator: {1}"
+            .format(recv_sequence, database_response))
+        recv_sequence += 1
+        
+        # If delay specified sleep for that while
+        sleep(database_response.request.art_delay)
+
+        """
+        Evaluating the policy here
+        """
+
+        """
+        Creating a new map for the resource and subject attributes
+        which will remove the timestamp field contained in the tuple
+        for the key and replace it with a tuple which indicates
+        whether each attributes is read from database or from
+        tentative cache.
+        In this new map, for the tuple value, 0 indicates value is read from
+        tentative cache 1 indicates value is read from database
+
+        """
+        sub_attribute_list_to_evaluate_policy = {}
+        res_attribute_list_to_evaluate_policy = {}
+        for key, value in database_response.request.sub_tent_updates.items():
+            sub_attribute_list_to_evaluate_policy[key] = (value[0], 0)
+
+        for key, value in database_response.request.res_tent_updates.items():
+            res_attribute_list_to_evaluate_policy[key] = (value[0], 0)
+
+        for key, value in database_response.sub_database_attributes.items():
+            sub_attribute_list_to_evaluate_policy[key] = (value, 1)
+
+        for key, value in database_response.res_database_attributes.items():
+            res_attribute_list_to_evaluate_policy[key] = (value, 1)
+
+        """
+        Getting the list of rules which belong to this object
+        from our policy map object
+        """
+
+        rules_list = {}
+        try:
+            rules_list = self.policy_map[database_response.request.action]
+        except KeyError:
+            response = Response(database_response.request, False)
+            rid = database_response.request.subject_id % len(coordinators)
+            logger.info("[Worker] No Rule Found for Action [{0}] while evaluating Request (UUID: {1})"
+                .format(database_response.request.action, database_response.request.uuid))
+            send(('FROM_WORKER',response), to = (coordinators[rid]))
+            return
+
+        response = Response(database_response.request, False)
+
+        """
+        Checking for rules which match the action in the request
+        """
+
+        update_rule = None
+        sub_result = ()
+        res_result = ()
+        for rule in rules_list:
+
+            sub_result = validate_attributes_in_policy(
+                            rule.subject_condition,
+                            sub_attribute_list_to_evaluate_policy,
+                            response.request.sub_tent_updates,
+                            sub_attribute_list_to_evaluate_policy,
+                            res_attribute_list_to_evaluate_policy)
+
+            if (sub_result[0] == True):
+                res_result = validate_attributes_in_policy(
+                            rule.resource_condition,
+                            res_attribute_list_to_evaluate_policy,
+                            response.request.res_tent_updates,
+                            sub_attribute_list_to_evaluate_policy,
+                            res_attribute_list_to_evaluate_policy)
+                
+                if(res_result[0] == True):
+                    response.result = True
+
+                    """
+                    Populating the subject and resource to update map
+                    from the rule which matches
+                    """
+                    response.sub_to_update = update_attributes_after_policy_evaluation(
+                                rule.subject_update,
+                                sub_attribute_list_to_evaluate_policy,
+                                sub_attribute_list_to_evaluate_policy,
+                                res_attribute_list_to_evaluate_policy)
+                    
+                    response.res_to_update = update_attributes_after_policy_evaluation(
+                                rule.resource_update,
+                                res_attribute_list_to_evaluate_policy,
+                                sub_attribute_list_to_evaluate_policy,
+                                res_attribute_list_to_evaluate_policy)
+
+                    """
+                    Popluating the read attributes which
+                    have been used to evaulate the policy
+                    """
+                    logger.debug("[Worker] Policy Evaluated Using Rule:%s", rule)
+                    response.sub_tent_attr_used = sub_result[1]
+                    response.sub_db_attr_used   = sub_result[2]
+
+                    response.res_tent_attr_used = res_result[1]
+                    response.res_db_attr_used   = res_result[2]
+                    break
+
+
+        rid = response.request.subject_id % len(coordinators)
+        logger.info("[Worker] Sending response (UUID: {0}) to Subject Coordinator"
+            .format(response.request.uuid))
+        logger.debug("[Worker] Sending response (seq. {0}) to Subject Coordinator: {1}"
+            .format(send_sequence, response))
+        send_sequence += 1
+        send(('FROM_WORKER',response), to = (coordinators[rid]))

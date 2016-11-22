@@ -1,0 +1,110 @@
+class Request(object):
+    def __init__(self, subject_id, resource_id, action):
+        self.uuid               = None
+        self.subject_id         = subject_id
+        self.resource_id        = resource_id
+        
+        self.action             = action
+        
+        self.sub_tent_updates   = {}
+        self.res_tent_updates   = {}
+
+        self.owner              = None
+
+        self.timestamp          = None
+
+        self.art_delay          = 0
+        self.res_delay          = 0
+
+    def __str__(self):
+        return ("\nSubject ID: {0} \
+                \nResource ID: {1} \
+                \nAction: {2} \
+                \nSubject Cache: {3} \
+                \nResource Cache: {4} \
+                \nOwner: {5} \
+                \nTimeStamp: {6} \
+                \nUUID: {7}     \
+                \n"
+                .format(
+                    self.subject_id,
+                    self.resource_id,
+                    self.action,
+                    self.sub_tent_updates,
+                    self.res_tent_updates,
+                    self.owner,
+                    self.timestamp,
+                    self.uuid))
+
+class Response(object):
+    def __init__(self, request, result):
+        self.request            = request
+        self.result             = result
+
+        self.sub_tent_attr_used = {}
+        self.res_tent_attr_used = {}
+
+        self.sub_db_attr_used   = {}
+        self.res_db_attr_used   = {}
+
+        self.sub_to_update      = {}
+        self.res_to_update      = {}
+
+    def __str__(self):
+        return (self.request.__str__() + \
+                "Sub attribs used from Cache: {0} \
+                \nRes attribs used from Cache: {1} \
+                \nSub attribs used from DB: {2} \
+                \nRes attribs used from DB: {3} \
+                \nSub attribs to Update: {4} \
+                \nRes attrubs to Update: {5} \
+                \nResult: {6} \
+                \n"
+                .format(
+                    self.sub_tent_attr_used,
+                    self.res_tent_attr_used,
+                    self.sub_db_attr_used,
+                    self.res_db_attr_used,
+                    self.sub_to_update,
+                    self.res_to_update,
+                    self.result))
+
+class DataBaseResponse(object):
+    def __init__(self, request):
+        self.request                    = request
+        self.sub_database_attributes    = {}
+        self.res_database_attributes    = {}
+        self.result = False
+
+    def __str__(self):
+        return (self.request.__str__() + \
+                "Sub DB Attributes: {0} \
+                 \nRes DB Attributes: {1} \
+                 \nResult {2} \
+                 \n"
+                .format(
+                    self.sub_database_attributes,
+                    self.res_database_attributes,
+                    self.result))
+
+class Rule(object):
+    def __init__(self, subject_condition, resource_condition, action, subject_update, resource_update):
+        self.subject_condition = subject_condition
+        self.resource_condition = resource_condition
+        self.action = action
+        self.subject_update = subject_update
+        self.resource_update = resource_update
+
+    def __str__(self):
+        return ("\nSubject Condition: {0} \
+                 \nResource Condition: {1} \
+                 \nAction: {2} \
+                 \nSubject Update: {3} \
+                 \nResource Update: {4} \
+                 \n"
+                .format(
+                    self.subject_condition,
+                    self.resource_condition,
+                    self.action,
+                    self.subject_update,
+                        self.resource_update))

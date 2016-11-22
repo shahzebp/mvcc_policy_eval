@@ -1,38 +1,33 @@
 class Request(object):
-    def __init__(self, subject_id, resource_id, action):
+    def __init__(self, object1_id, object2_id, action):
         self.uuid               = None
-        self.subject_id         = subject_id
-        self.resource_id        = resource_id
-        
+        self.object1_id         = object1_id
+        self.object2_id         = object2_id
         self.action             = action
-        
-        self.sub_tent_updates   = {}
-        self.res_tent_updates   = {}
-
+        self.cached_updates     = [{}, {}]
         self.client             = None
-
         self.timestamp          = None
-
         self.art_delay          = 0
         self.res_delay          = 0
+        self.read_only          = False
 
     def __str__(self):
-        return ("\nSubject ID: {0} \
-                \nResource ID: {1} \
+        return ("\nObject1 ID: {0} \
+                \nObject2 ID: {1} \
                 \nAction: {2} \
-                \nSubject Cache: {3} \
-                \nResource Cache: {4} \
-                \nOwner: {5} \
+                \nObject1 Cache: {3} \
+                \nObject2 Cache: {4} \
+                \nClient: {5} \
                 \nTimeStamp: {6} \
                 \nUUID: {7}     \
                 \n"
                 .format(
-                    self.subject_id,
-                    self.resource_id,
+                    self.object1_id,
+                    self.object2_id,
                     self.action,
-                    self.sub_tent_updates,
-                    self.res_tent_updates,
-                    self.owner,
+                    self.cached_updates[0],
+                    self.cached_updates[1],
+                    self.client,
                     self.timestamp,
                     self.uuid))
 

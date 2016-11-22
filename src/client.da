@@ -10,9 +10,16 @@ from time import sleep
 from common import Request, Response
 
 class Client(process):
-	
+
+	def static_analysis():
+		print("Performing static analysis:", self.policy_file)
+		self.mightWriteObj = 2
+
 	def setup(coordinators, my_index, config):
-		
+		self.policy_file = config.get("setup", "policy_def_file")
+		self.mightWriteObj = 0
+		static_analysis()
+
 		self.logger = logging.getLogger('sLogger')
 
 		current_section = "client" + str(my_index)

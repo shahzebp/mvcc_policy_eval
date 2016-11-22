@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<data>
+    <subject id="9">
+        <attribute position= "employee" history=""/>
+    </subject>
+    <subject id="10">
+        <attribute position= "manager" history=""/>
+    </subject>
+    <subject id="11">
+        <attribute position= "employee" history="bank B"/>
+    </subject>
+    <subject id = "66">
+        <attribute position="player" age="20" gameswatched="0"/>
+    </subject>
+    <subject id="55">
+        <attribute position= "customer" age="22"/>
+    </subject>
+    <subject id="56">
+        <attribute position= "customer" age="22"/>
+    </subject>
+    <subject id="57">
+        <attribute position= "customer" age="24"/>
+    </subject>
+    <subject id="99">
+        <attribute position= "nurse" history=""/>
+    </subject>
+    <resource id="44401">
+        <attribute name= "bank A"/>
+    </resource>
+    <resource id="44402">
+        <attribute name= "bank B"/>
+    </resource>
+    <resource id="44403">
+        <attribute type= "movie" viewCount="0"/>
+    </resource>
+    <resource id="44409">
+        <attribute type= "show" viewCount="0"/>
+    </resource>
+    <resource id="44420">
+        <attribute type= "game" viewCount="0"/>
+    </resource>      
+</data>

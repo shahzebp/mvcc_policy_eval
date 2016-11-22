@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<policy>
+
+  <rule name="access bank A first time">
+    <subjectCondition position="employee" history=""></subjectCondition>
+    <resourceCondition name="bank A"></resourceCondition>
+    <action name="read"></action>
+    <subjectUpdate history="$resource.name"></subjectUpdate>
+  </rule>
+
+  <rule name="access bank A again">
+    <subjectCondition position="employee" history="bank A"></subjectCondition>
+    <resourceCondition name="bank A"></resourceCondition>
+    <action name="read"></action>
+  </rule>
+
+  <rule name="update bank A again">
+    <subjectCondition position="manager" history="bank A"></subjectCondition>
+    <resourceCondition name="bank A"></resourceCondition>
+    <action name="update"></action>
+  </rule>
+
+  <rule name="access bank B first time">
+    <subjectCondition position="employee" history=""></subjectCondition>
+    <resourceCondition name="bank B"></resourceCondition>
+    <action name="read"></action>
+    <subjectUpdate history="bank B"></subjectUpdate>
+  </rule>
+
+  <rule name="access bank B again">
+    <subjectCondition position="employee" history="bank B"></subjectCondition>
+    <resourceCondition name="bank B"></resourceCondition>
+    <action name="read"></action>
+  </rule>
+
+  <rule name="customers collectively can view each movie at most 5 times">
+    <subjectCondition position="customer"></subjectCondition>
+    <resourceCondition type="movie" viewCount="&lt;5"></resourceCondition>
+    <action name="view"></action>
+    <resourceUpdate viewCount="++"></resourceUpdate>
+  </rule>
+
+  <rule name="customers collectively can view each show at most 100 times">
+    <subjectCondition position="customer" age=">20"></subjectCondition>
+    <resourceCondition type="show" viewCount="&lt;100"></resourceCondition>
+    <action name="view"></action>
+    <resourceUpdate viewCount="++"></resourceUpdate>
+  </rule>
+
+ <rule name="player can watch a game atmost 2 times and game can be watched 3 times in total">
+    <subjectCondition position="player" age=">15" gameswatched="&lt;2"></subjectCondition>
+    <resourceCondition type="game" viewCount="&lt;3"></resourceCondition>
+    <action name="watch"></action>
+    <subjectUpdate gameswatched="++"></subjectUpdate>
+  </rule>
+
+  <rule name="player can watch a game atmost 2 times and game can be watched 3 times in total">
+    <subjectCondition position="player" age=">15" gameswatched="&lt;5"></subjectCondition>
+    <resourceCondition type="game" viewCount="&lt;5"></resourceCondition>
+    <action name="play"></action>
+    <resourceUpdate viewCount="++"></resourceUpdate>
+  </rule>
+
+</policy>

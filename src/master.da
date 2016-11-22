@@ -8,7 +8,20 @@ import da
 from database import Database
 
 def main():
-    '''
+    if (len(sys.argv) < 2):
+        output("ERR: Please provide a config file")
+        exit(1)
+
+    config = configparser.ConfigParser()
+
+    # it fails if the config file is not a ini file with sections
+    config.read(str(sys.argv[1]))
+
+    if not config:
+        output("ERR: Cannot read config file. Please check structure")
+        exit(1)
+
+    
     # set up logging
     logging.config.fileConfig(str(config.get("setup", "log_conf_file")), 
                                     defaults={'logfilename':
@@ -35,20 +48,22 @@ def main():
     logger.info("Number of clients:    %s ", int(config.get("setup", "num_clients")))
     logger.info("Min DB Latency:    %s ", config.get("setup", "mindblatency"))
     logger.info("Max DB Latency:    %s \n", config.get("setup", "maxdblatency"))
-    '''
+    
+    database_init_file = str(config.get("setup", "database_init_file"))
+
     # creating database process
     database = new(Database, num = 1)
-    #database_init_file = str(config.get("setup", "database_init_file"))
-    setup(database, (1,))
+    
+    setup(database, (None))
     start(database)
 
-    '''
+    
     # creating coordinators
     total_coords = int(config.get("setup", "num_coords"))
     coordinators_set = new(Coordinator, num = total_coords)
     coordinators = list(coordinators_set)
 
-    for p in coordinators: setup(p, (coordinators, database, config, ))
+    for p in coordinators: setup(p, (coordinators, database))
     start(coordinators)
 
     # creating clients
@@ -67,6 +82,5 @@ def main():
 
     # Send exit message to coordinators and database
     send(('EXIT',), to=(coordinators))
-    '''
-    send(('EXIT',), to=(database))
     
+    send(('EXIT',), to=(database))

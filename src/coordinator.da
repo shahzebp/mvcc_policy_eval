@@ -17,37 +17,31 @@ from common import Request, Response
 
 class Coordinator(process):
 
-    def setup(coordinators):
-        '''
+    def setup(coordinators, database, config  ):
+        
         self.logger = logging.getLogger('sLogger')
 
         self.exit = False
         
-        self.sub_main_cache = {}
-        self.sub_tent_cache = {}
+        main_cache = {}
 
-        self.res_main_cache = {}
-        
         self.send_sequence  = 1
         self.recv_sequence  = 1
 
-        # Use this queue to seralize the responses
-        self.response_queue = queue.PriorityQueue(maxsize=0)       
-
-        self.request_sequence  = {}
+        self.PCA = {}
 
         self.maxdblatency   = int(config.get("setup", "maxdblatency"))
         
         # Each coordinator intantiates its own workers
         # It is one as of now
-        '''
+        
         self.worker_index   = 0
 
         num_worker = 2 #int(config.get("setup", "num_worker_per_coord"))
 
         workers_set     = new(Worker, num = num_worker)
         self.workers    = list(workers_set)
-        setup(self.workers, (coordinators,))
+        setup(self.workers, (coordinators, database, config))
         start(workers)
     
         print("workers started")
@@ -58,7 +52,7 @@ class Coordinator(process):
     
         await(received(('EXIT',)))
             
-        #logger.info("Exiting the Coordinators")
+        logger.info("Exiting the Coordinators")
         # Issue await to the clients
         send(('EXIT',), to=(workers))
         

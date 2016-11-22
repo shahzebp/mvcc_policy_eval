@@ -11,8 +11,8 @@ from common import Request, Response
 
 class Client(process):
 	
-	def setup(coordinators, index):
-		"""
+	def setup(coordinators, my_index, config):
+		
 		self.logger = logging.getLogger('sLogger')
 
 		current_section = "client" + str(my_index)
@@ -75,8 +75,6 @@ class Client(process):
 			request.uuid = uuid.hexdigest()
 
 			total_requests.append(request)
-		"""
-		pass		
 
 	def sendtask():
 

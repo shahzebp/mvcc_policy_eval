@@ -8,8 +8,8 @@ import logging.config
 import operator
 
 class Worker(process):
-    def setup(coordinators): #, config):
-        """
+    def setup(coordinators, database, config):
+        
         self.logger = logging.getLogger('sLogger')
         self.exit = False
         self.coordinators = coordinators
@@ -20,9 +20,7 @@ class Worker(process):
         policy_file = config.get("setup", "policy_def_file")
 
         read_policy(policy_file)
-        """
-        pass
-
+        
     def does_attribute_value_satisfy_condition(value_in_policy, value_from_db):
         if(len(value_in_policy) == 0 and len(value_from_db) == 0):
             return True
@@ -120,7 +118,7 @@ class Worker(process):
                     to_update[key] = update_condition[key]
         return to_update
 
-    '''
+
     def read_policy(policy_xml):
         tree = ET.parse(policy_xml)
         root = tree.getroot()
@@ -146,7 +144,6 @@ class Worker(process):
                 self.policy_map[act["name"]].append(rule_object)
             else:
                 self.policy_map[act["name"]] = [rule_object]
-    '''
 
     def run():
         await(received(('EXIT',)))

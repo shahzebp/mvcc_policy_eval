@@ -1,7 +1,16 @@
+import logging
+import logging.handlers
+import logging.config
+import random
+import xml.etree.ElementTree as ET
+from common import DataBaseResponse
+import threading, time
+import pprint
+
 class Database(process):
-    def setup(n):
+    def setup(config):
         print("database called")
-        '''
+        
         self.logger = logging.getLogger('sLogger')
         self.database_init_file = str(config.get("setup", "database_init_file"))
         self.root = ET.parse(database_init_file).getroot()
@@ -12,9 +21,9 @@ class Database(process):
         self.mindblatency = int(config.get("setup", "mindblatency"))
         self.maxdblatency = int(config.get("setup", "maxdblatency"))
         self.randvalue = random.randrange(mindblatency, maxdblatency)
-        '''
+        
     def run():
-        '''
+        
         for child in self.root:
             innerdict = {}
             for attribute in child:
@@ -26,10 +35,10 @@ class Database(process):
         pp = pprint.PrettyPrinter(indent=4)
         logger.info("[Database Emulator] Dumping database contents to log file\n{0}"
             .format(pp.pformat(self.database)))
-        '''
+        
         await(received(('EXIT',)))
         print("exiting")
-    '''
+    
     def receive(msg=('FROM_WORKER', request), from_ = p):
         value = {}
         logger.info("[Database Emulator] Receiving request (UUID: {0}) from Worker"

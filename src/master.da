@@ -57,7 +57,7 @@ def main():
     # creating database process
     database = new(Database, num = 1)
     
-    setup(database, (1,))
+    setup(database, (config,))
     print("created database")
     
     start(database)
@@ -70,7 +70,7 @@ def main():
 
     print("creating coordinators")
     
-    for p in coordinators: setup(p, (coordinators,))
+    for p in coordinators: setup(p, (coordinators, database, config, ))
     
     start(coordinators)
 
@@ -80,7 +80,7 @@ def main():
     clients = new(Client, num = total_clients)
     i = 0
     for p in clients : 
-        setup(p, (coordinators, i + 1,))
+        setup(p, (coordinators, i + 1, config))
         i = i + 1
 
     print("starting clients")

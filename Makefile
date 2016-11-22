@@ -12,4 +12,4 @@ clean:
 
 run:
 	-@ mkdir log
-	dar src/master.da $(ARG)
+	dar --message-buffer-size 8192 src/master.da $(ARG)

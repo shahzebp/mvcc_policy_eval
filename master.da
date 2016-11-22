@@ -1,0 +1,103 @@
+import sys
+import configparser
+import logging
+import logging.handlers
+import logging.config
+import da
+
+from database import Database
+
+
+class Pong(process):
+    def setup(total_pings:int):
+        output("pong setup")
+
+    def run():
+        a = False
+        await(len(listof(p, received(('Ping',), from_=p))) == total_pings)
+
+    def receive(msg=('Ping',), from_=p):
+        output("Pinged")
+        send(('Pong',), to=p)
+
+class Ping(process):
+    def setup(p:Pong, nrounds:int):
+        output("ping setup")
+
+    def run():
+        for i in range(nrounds):
+            clk = logical_clock()
+            send(('Ping',), to=p)
+            await(some(received(('Pong',), clk=rclk), has=(rclk > clk)))
+
+    def receive(msg=('Pong',)):
+        output("Ponged.")
+
+def main():
+    '''
+    # set up logging
+    logging.config.fileConfig(str(config.get("setup", "log_conf_file")), 
+                                    defaults={'logfilename':
+                                    str(config.get("setup", "log_dump_file"))})
+
+    logger = logging.getLogger('sLogger')
+    logger.setLevel(logging.INFO)
+
+    try:
+        if (str(config.get("setup", "log_level")) == "DEBUG" or
+            str(config.get("setup", "log_level") == "Debug")):
+
+            logger.setLevel(logging.DEBUG)
+    except:
+        pass
+
+    logger.info("Policy Evaluation Engine Configuration :")
+    logger.info("Total coordinators:    %s ", config.get("setup", "num_coords"))
+    logger.info("Workers per coordinator:    %s ", config.get("setup", "num_worker_per_coord"))
+    logger.info("Database init file:    %s ", config.get("setup", "database_init_file"))
+    logger.info("Log conf file:     %s ", config.get("setup", "log_conf_file"))    
+    logger.info("Log dump file:    %s ", config.get("setup", "log_dump_file"))
+    logger.info("Log level: %s ", logger.getEffectiveLevel())
+    logger.info("Number of clients:    %s ", int(config.get("setup", "num_clients")))
+    logger.info("Min DB Latency:    %s ", config.get("setup", "mindblatency"))
+    logger.info("Max DB Latency:    %s \n", config.get("setup", "maxdblatency"))
+    '''
+    # creating database process
+    database = new(Database, num = 1)
+    #database_init_file = str(config.get("setup", "database_init_file"))
+    setup(database, (1,))
+    start(database)
+    
+    nrounds = 3
+    npings = 3
+    config(clock='Lamport')
+    pong = new(Pong, [nrounds * npings], num= 1)
+
+    '''
+    # creating coordinators
+    total_coords = int(config.get("setup", "num_coords"))
+    coordinators_set = new(Coordinator, num = total_coords)
+    coordinators = list(coordinators_set)
+
+    for p in coordinators: setup(p, (coordinators, database, config, ))
+    start(coordinators)
+
+    # creating clients
+    total_clients = int(config.get("setup", "num_clients"))
+
+    clients = new(Client, num = total_clients)
+    i = 0
+    for p in clients : 
+        setup(p, (coordinators, i + 1, config,))
+        i = i + 1
+
+
+    start(clients)
+    # Wait for the clients to complete
+    for c in clients:  c.join()
+
+    # Send exit message to coordinators and database
+    send(('EXIT',), to=(coordinators))
+    '''
+    send(('EXIT',), to=(database))
+    

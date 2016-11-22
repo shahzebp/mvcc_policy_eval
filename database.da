@@ -1,0 +1,109 @@
+class Database(process):
+    def setup(n):
+        print("database called")
+        '''
+        self.logger = logging.getLogger('sLogger')
+        self.database_init_file = str(config.get("setup", "database_init_file"))
+        self.root = ET.parse(database_init_file).getroot()
+        self.exit = False
+        self.database = {}
+        self.send_sequence = 1
+        self.recv_sequence = 1
+        self.mindblatency = int(config.get("setup", "mindblatency"))
+        self.maxdblatency = int(config.get("setup", "maxdblatency"))
+        self.randvalue = random.randrange(mindblatency, maxdblatency)
+        '''
+    def run():
+        '''
+        for child in self.root:
+            innerdict = {}
+            for attribute in child:
+                for k,v in attribute.attrib.items():
+                    innerdict[k] = v
+                for k,v in child.attrib.items():
+                    self.database[v] = innerdict
+
+        pp = pprint.PrettyPrinter(indent=4)
+        logger.info("[Database Emulator] Dumping database contents to log file\n{0}"
+            .format(pp.pformat(self.database)))
+        '''
+        await(received(('EXIT',)))
+        print("exiting")
+    '''
+    def receive(msg=('FROM_WORKER', request), from_ = p):
+        value = {}
+        logger.info("[Database Emulator] Receiving request (UUID: {0}) from Worker"
+            .format(request.uuid))
+        logger.debug("[Database Emulator] Receiving request (seq. {0}) from Worker: {1}"
+            .format(recv_sequence, request))
+        recv_sequence += 1
+        db_response = DataBaseResponse(request)
+        db_response_sub_attribute_map = {}
+
+        """
+        Retrieving the attributes keys from the database
+        For both Subject and Resource
+        """
+        try:
+            subject_database_attribute_keys = set(self.database[str(request.subject_id)].keys())
+
+            """
+            Finding the diff of the attributes which are present
+            in the database and in the tentative update map in the request
+            for the subject
+            """
+            sub_attribute_diff = set(subject_database_attribute_keys - set(request.sub_tent_updates.keys()))
+            for attr in sub_attribute_diff:
+                db_response_sub_attribute_map[attr] = self.database[str(request.subject_id)][attr]
+        except:
+            db_response.result = False
+
+        db_response_res_attribute_map = {}
+
+        try:
+            resource_database_attribute_keys = set(self.database[str(request.resource_id)].keys())
+            """
+            Finding the diff of the attributes which are present
+            in the database and in the tentative update map in the request
+            for the Resource
+            """
+
+            res_attribute_diff = set(resource_database_attribute_keys - set(request.res_tent_updates.keys()))
+
+            for attr in res_attribute_diff:
+                db_response_res_attribute_map[attr] = self.database[str(request.resource_id)][attr]
+        except:
+            db_response.result = False
+
+        #Populating the subject and resource attributes maps which have been
+        #calculated earlier in this function
+        db_response.sub_database_attributes = db_response_sub_attribute_map
+        db_response.res_database_attributes = db_response_res_attribute_map
+        logger.info("[Database Emulator] Sending database response (UUID: {0}) to Worker"
+            .format(db_response.request.uuid))
+        logger.debug("[Database Emulator] Sending database response (seq. {0}) to Worker: {1}"
+            .format(send_sequence, db_response))
+        send_sequence += 1
+        send(('FROM_DATABASE',db_response), to = p)
+
+    """"
+    This function finally commits the changes to the database.
+    """
+
+    def commit_to_db(attributes_to_update):
+        logger.debug("[Database Emulator] Commiting changes to database %s", attributes_to_update)
+        res_sub_id, value = attributes_to_update.popitem()
+        self.database[res_sub_id].update(value)
+
+    """"
+    This function recives from both the resource and the subject corordinator
+    the attributes that need to the flushed to the database and starts a thread
+    which calls a function (after a certain random time between mindblatency and maxdblatency)
+    to commit the update values to the database
+    """
+
+    def receive(msg=('FROM_COORDINATOR_ATTR_UPDATE', attributes_to_update)):
+        logger.debug("[Database Emulator] Receiving updates {0} from coordinator to commit to db".
+                    format(attributes_to_update))
+        threading.Timer(randvalue, commit_to_db, [attributes_to_update]).start()
+    '''

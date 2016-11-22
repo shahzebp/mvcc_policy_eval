@@ -17,7 +17,7 @@ from common import Request, Response
 
 class Coordinator(process):
 
-    def setup(coordinators, database, config):
+    def setup(coordinators):
         '''
         self.logger = logging.getLogger('sLogger')
 
@@ -43,23 +43,25 @@ class Coordinator(process):
         '''
         self.worker_index   = 0
 
-        num_worker = 1 #int(config.get("setup", "num_worker_per_coord"))
+        num_worker = 2 #int(config.get("setup", "num_worker_per_coord"))
 
         workers_set     = new(Worker, num = num_worker)
         self.workers    = list(workers_set)
-        setup(self.workers, (coordinators, database))
+        setup(self.workers, (coordinators,))
         start(workers)
-    '''
+    
+        print("workers started")
+
     def run():
 
         # Await till exit is issued by the master 
     
         await(received(('EXIT',)))
-        '''    
-        logger.info("Exiting the Coordinators")
+            
+        #logger.info("Exiting the Coordinators")
         # Issue await to the clients
         send(('EXIT',), to=(workers))
-        '''
+        
     '''
     def attributes_in_sync(map1, map2): 
 
@@ -102,11 +104,11 @@ class Coordinator(process):
             return (attributes_in_sync(sent_tent_map, latest_tentative_map)
                 and attributes_clash(changelist_map, latest_tentative_map))
 
-
+    '''
     # Initial process when request is received.
     # This is also the point of start for restart
     def entrypoint(request):
-        
+        '''
         if request.subject_id in sub_main_cache:
             keys_to_flush = []
             for k,v in sub_main_cache[request.subject_id].items():
@@ -146,26 +148,32 @@ class Coordinator(process):
             .format(send_sequence, request))
 
         send_sequence =  send_sequence + 1
-
-        send(('FROM_SUBJECT_COORD', request), to=(coordinators[rid]))
+        '''
+        send(('FROM_COORD_1', request), to=(coordinators[1]))
 
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
+        print("from client received")
+
+        '''
         logger.info("[Subject Coord] Request received (UUID: {0}) from Client"
             .format(request.uuid))
         logger.debug("[Subject Coord] Request received (seq. {0}) from Client: {1}"
             .format(recv_sequence, request))
-
+        
         recv_sequence = recv_sequence + 1
-
+        '''
         request.owner       = p
         
         entrypoint(request)
 
     
     # Receive the request from subject coordinator
-    def receive(msg=('FROM_SUBJECT_COORD', request), from_=p):
+    def receive(msg=('FROM_COORD_1', request), from_=p):
 
+        print("from coord1 received")
+
+        '''
         logger.info("[Resource Coord] Request received (UUID: {0}) from Sub Coord"
             .format(request.uuid))
         logger.debug("[Resource Coord] Request received (seq. {0}) from Sub Coord {1}"
@@ -198,14 +206,17 @@ class Coordinator(process):
             .format(send_sequence, request))
 
         send_sequence =  send_sequence + 1
+        '''
+        send(('FROM_COORD_2', request), to = (workers[0]))
 
-        send(('FROM_RECEIVE_COORD', request), to = (workers[worker_index]))
-
+        '''
         # Round robin worker usage for fair share distribution
         worker_index = worker_index + 1
         if worker_index == len(workers):
             worker_index = 0
+        '''
 
+    '''
     # Extract the next pending response to be processes from the queue and
     # process it
     def extract_next_response():
@@ -277,12 +288,14 @@ class Coordinator(process):
             entrypoint(response.request)
 
             extract_next_response()
-
+    '''
     # Subject cooridinator receives response from the worker
     # This response is the evaluation result for the request
     # There exists a compostion of request inside response
     def receive(msg=('FROM_WORKER', response), from_=p):
+        print("from worker received")
 
+        '''
         logger.info("[Subject Coord] Response received (UUID. {0}) from Worker"
             .format(response.request.uuid))
         logger.debug("[Subject Coord] Response received (seq. {0}) from Worker: {1}"
@@ -307,7 +320,9 @@ class Coordinator(process):
                 process_response(response)
         else:
             process_response(response)
- 
+        '''
+
+    '''
     # Resource cooridinator receives the response to check if there exists 
     # resource conflicts
     # It sends the result to the subject cooridnator

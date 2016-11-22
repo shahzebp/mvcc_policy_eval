@@ -8,7 +8,7 @@ import logging.config
 import operator
 
 class Worker(process):
-    def setup(coordinators:list, database): #, config):
+    def setup(coordinators): #, config):
         """
         self.logger = logging.getLogger('sLogger')
         self.exit = False
@@ -149,10 +149,10 @@ class Worker(process):
     '''
 
     def run():
-        #await(received(('EXIT',)))
-        logger.info("Exiting the Workers")
+        await(received(('EXIT',)))
+        #logger.info("Exiting the Workers")
 
-    def receive(msg=('FROM_COORDINATOR_2', request), from_ = p):
+    def receive(msg=('FROM_COORD_2', request), from_ = p):
         """
         logger.info("[Worker] Receiving request (UUID: {0}) from Resource Coordinator"
             .format(request.uuid))

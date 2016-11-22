@@ -6,6 +6,8 @@ import logging.config
 import da
 
 from database import Database
+from coordinator import Coordinator
+from client import Client
 
 def main():
     if (len(sys.argv) < 2):
@@ -49,12 +51,15 @@ def main():
     logger.info("Min DB Latency:    %s ", config.get("setup", "mindblatency"))
     logger.info("Max DB Latency:    %s \n", config.get("setup", "maxdblatency"))
     
+    print("starting")
     database_init_file = str(config.get("setup", "database_init_file"))
 
     # creating database process
     database = new(Database, num = 1)
     
-    setup(database, (None))
+    setup(database, (1,))
+    print("created database")
+    
     start(database)
 
     
@@ -63,7 +68,10 @@ def main():
     coordinators_set = new(Coordinator, num = total_coords)
     coordinators = list(coordinators_set)
 
-    for p in coordinators: setup(p, (coordinators, database))
+    print("creating coordinators")
+    
+    for p in coordinators: setup(p, (coordinators,))
+    
     start(coordinators)
 
     # creating clients
@@ -72,10 +80,10 @@ def main():
     clients = new(Client, num = total_clients)
     i = 0
     for p in clients : 
-        setup(p, (coordinators, i + 1, config,))
+        setup(p, (coordinators, i + 1,))
         i = i + 1
 
-
+    print("starting clients")
     start(clients)
     # Wait for the clients to complete
     for c in clients:  c.join()

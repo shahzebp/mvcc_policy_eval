@@ -11,7 +11,7 @@ from common import Request, Response
 
 class Client(process):
 	
-	def setup(coordinators):
+	def setup(coordinators, index):
 		"""
 		self.logger = logging.getLogger('sLogger')
 
@@ -93,16 +93,17 @@ class Client(process):
 
 		recv_sequence = recv_sequence + 1
 		"""
-
+		print("sending")
 		send(('FROM_CLIENT', request),to=(coordinators[0]))
 
 	def run():
 
+		print("client run called")
 		#sleep(my_index / 100.0)
 
 		sendtask()
 		
-		#await(num_requests == current_request_index)
+		await(1 == 2)
 
 	def receive(msg=('FROM_WORKER', response), from_ = p):
 		print("Received From Worker in Client")

@@ -149,8 +149,8 @@ class Worker(process):
         await(received(('EXIT',)))
         #logger.info("Exiting the Workers")
 
-    def receive(msg=('FROM_COORD_2', request), from_ = p):
-        """
+    def receive(msg=('FROM_COORD', request), from_ = p):
+        
         logger.info("[Worker] Receiving request (UUID: {0}) from Resource Coordinator"
             .format(request.uuid))
         logger.debug("[Worker] Receiving request (seq. {0}) from Resource Coordinator: {1}"
@@ -162,11 +162,12 @@ class Worker(process):
         logger.debug("[Worker] Sending request (seq. {0}) to Database Emulator: {1}"
             .format(send_sequence, request))
         send_sequence += 1
-        """
-        send(('FROM_WORKER', request), to = (coordinators[1]))
-        send(('FROM_WORKER', request), to = (request.client))
+
+        response = Response(request, True)
+        send(('FROM_WORKER', response), to = (coordinators[1]))
+        send(('OUTCOME', response), to = (request.client))
     
-    '''
+
     def receive(msg=('FROM_DATABASE', database_response), from_ = p):
 
         logger.info("[Worker] Receiving response (UUID: {0}) from Database Emulator"
@@ -180,9 +181,7 @@ class Worker(process):
 
         """
         Evaluating the policy here
-        """
 
-        """
         Creating a new map for the resource and subject attributes
         which will remove the timestamp field contained in the tuple
         for the key and replace it with a tuple which indicates
@@ -287,4 +286,3 @@ class Worker(process):
             .format(send_sequence, response))
         send_sequence += 1
         send(('FROM_WORKER',response), to = (coordinators[rid]))
-    '''

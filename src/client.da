@@ -88,8 +88,8 @@ class Client(process):
 		request = Request(0, 1, "view") #total_requests[current_request_index]
 		request.client = self
 
-		"""
-		rid = request.subject_id % len(coordinators)
+		
+		rid = request.object1_id % len(coordinators)
 
 		logger.info("[Client] Request sent (UUID: {0}) to Subject Coord"
 			.format(request.uuid))
@@ -97,7 +97,7 @@ class Client(process):
 			.format(send_sequence, request))
 
 		recv_sequence = recv_sequence + 1
-		"""
+		
 		print("sending")
 		send(('FROM_CLIENT', request),to=(coordinators[0]))
 
@@ -110,9 +110,9 @@ class Client(process):
 		
 		await(1 == 2)
 
-	def receive(msg=('FROM_WORKER', response), from_ = p):
+	def receive(msg=('OUTCOME', response), from_ = p):
 		print("Received From Worker in Client")
-		"""
+		
 		logger.info("[Client] Final Response received (UUID: {0}) from Subject Coord With Result: {1}"
 			.format(response.request.uuid, response.result))
 		logger.debug("[Client] Response received (seq. {0}) from Subject Coord {1}"
@@ -124,4 +124,3 @@ class Client(process):
 
 		if (num_requests > current_request_index):
 			sendtask()
-		"""

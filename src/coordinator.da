@@ -201,7 +201,7 @@ class Coordinator(process):
 
         send_sequence =  send_sequence + 1
         '''
-        send(('FROM_COORD_2', request), to = (workers[0]))
+        send(('FROM_COORD', request), to = (workers[0]))
 
         '''
         # Round robin worker usage for fair share distribution

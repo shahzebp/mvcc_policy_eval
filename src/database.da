@@ -32,12 +32,13 @@ class Database(process):
                 for k,v in child.attrib.items():
                     self.database[v] = innerdict
 
+        await(received(('EXIT',)))
+        print("exiting")
+
         pp = pprint.PrettyPrinter(indent=4)
         logger.info("[Database Emulator] Dumping database contents to log file\n{0}"
             .format(pp.pformat(self.database)))
         
-        await(received(('EXIT',)))
-        print("exiting")
     
     def receive(msg=('FROM_WORKER', request), from_ = p):
         value = {}
@@ -115,4 +116,3 @@ class Database(process):
         logger.debug("[Database Emulator] Receiving updates {0} from coordinator to commit to db".
                     format(attributes_to_update))
         threading.Timer(randvalue, commit_to_db, [attributes_to_update]).start()
-    '''

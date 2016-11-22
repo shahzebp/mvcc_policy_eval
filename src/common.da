@@ -9,7 +9,7 @@ class Request(object):
         self.sub_tent_updates   = {}
         self.res_tent_updates   = {}
 
-        self.owner              = None
+        self.client             = None
 
         self.timestamp          = None
 

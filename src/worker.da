@@ -8,7 +8,8 @@ import logging.config
 import operator
 
 class Worker(process):
-    def setup(coordinators:list, database, config):
+    def setup(coordinators:list, database): #, config):
+        """
         self.logger = logging.getLogger('sLogger')
         self.exit = False
         self.coordinators = coordinators
@@ -19,6 +20,8 @@ class Worker(process):
         policy_file = config.get("setup", "policy_def_file")
 
         read_policy(policy_file)
+        """
+        pass
 
     def does_attribute_value_satisfy_condition(value_in_policy, value_from_db):
         if(len(value_in_policy) == 0 and len(value_from_db) == 0):
@@ -117,6 +120,7 @@ class Worker(process):
                     to_update[key] = update_condition[key]
         return to_update
 
+    '''
     def read_policy(policy_xml):
         tree = ET.parse(policy_xml)
         root = tree.getroot()
@@ -142,12 +146,14 @@ class Worker(process):
                 self.policy_map[act["name"]].append(rule_object)
             else:
                 self.policy_map[act["name"]] = [rule_object]
+    '''
 
     def run():
-        await(received(('EXIT',)))
+        #await(received(('EXIT',)))
         logger.info("Exiting the Workers")
 
-    def receive(msg=('FROM_RECEIVE_COORD', request), from_ = p):
+    def receive(msg=('FROM_COORDINATOR_2', request), from_ = p):
+        """
         logger.info("[Worker] Receiving request (UUID: {0}) from Resource Coordinator"
             .format(request.uuid))
         logger.debug("[Worker] Receiving request (seq. {0}) from Resource Coordinator: {1}"
@@ -159,9 +165,13 @@ class Worker(process):
         logger.debug("[Worker] Sending request (seq. {0}) to Database Emulator: {1}"
             .format(send_sequence, request))
         send_sequence += 1
-        send(('FROM_WORKER', request), to = (database))
-        
+        """
+        send(('FROM_WORKER', request), to = (coordinators[1]))
+        send(('FROM_WORKER', request), to = (request.client))
+    
+    '''
     def receive(msg=('FROM_DATABASE', database_response), from_ = p):
+
         logger.info("[Worker] Receiving response (UUID: {0}) from Database Emulator"
             .format(database_response.request.uuid))
         logger.debug("[Worker] Receiving response (seq. {0}) from Database Emulator: {1}"
@@ -280,3 +290,4 @@ class Worker(process):
             .format(send_sequence, response))
         send_sequence += 1
         send(('FROM_WORKER',response), to = (coordinators[rid]))
+    '''

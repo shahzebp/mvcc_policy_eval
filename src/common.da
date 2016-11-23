@@ -9,7 +9,7 @@ class Request(object):
         self.timestamp          = None
         self.art_delay          = 0
         self.res_delay          = 0
-        self.read_only          = False
+        self.read_only          = True
 
     def __str__(self):
         return ("\nObject1 ID: {0} \
@@ -66,20 +66,19 @@ class Response(object):
 
 class DataBaseResponse(object):
     def __init__(self, request):
-        self.request                    = request
-        self.sub_database_attributes    = {}
-        self.res_database_attributes    = {}
+        self.request                = request
+        self.database_attributes    = [{}, {}]
         self.result = False
 
     def __str__(self):
         return (self.request.__str__() + \
-                "Sub DB Attributes: {0} \
-                 \nRes DB Attributes: {1} \
+                "Object 1 DB Attributes: {0} \
+                 \nObject 2 DB Attributes: {1} \
                  \nResult {2} \
                  \n"
                 .format(
-                    self.sub_database_attributes,
-                    self.res_database_attributes,
+                    self.database_attributes[0],
+                    self.database_attributes[1],
                     self.result))
 
 class Rule(object):

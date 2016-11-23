@@ -51,15 +51,12 @@ def main():
     logger.info("Min DB Latency:    %s ", config.get("setup", "mindblatency"))
     logger.info("Max DB Latency:    %s \n", config.get("setup", "maxdblatency"))
     
-    print("starting")
     database_init_file = str(config.get("setup", "database_init_file"))
 
     # creating database process
     database = new(Database, num = 1)
     
-    setup(database, (config,))
-    print("created database")
-    
+    setup(database, (config,))    
     start(database)
 
     
@@ -67,8 +64,6 @@ def main():
     total_coords = int(config.get("setup", "num_coords"))
     coordinators_set = new(Coordinator, num = total_coords)
     coordinators = list(coordinators_set)
-
-    print("creating coordinators")
     
     for p in coordinators: setup(p, (coordinators, database, config, ))
     
@@ -83,7 +78,6 @@ def main():
         setup(p, (coordinators, i + 1, config))
         i = i + 1
 
-    print("starting clients")
     start(clients)
     # Wait for the clients to complete
     for c in clients:  c.join()

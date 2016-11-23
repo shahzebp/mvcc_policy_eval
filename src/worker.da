@@ -163,12 +163,7 @@ class Worker(process):
             .format(send_sequence, request))
         send_sequence += 1
 
-        response = Response(request, True)
-        if(request.read_only):
-            send(('FROM_WORKER', response), to = (coordinators[0]))
-            send(('OUTCOME', response), to = (request.client))
-        else:
-            send(('FROM_WORKER', response), to = (coordinators[1]))
+        send(('FROM_WORKER', request), to = (database))
 
     def receive(msg=('FROM_DATABASE', database_response), from_ = p):
 
@@ -180,6 +175,16 @@ class Worker(process):
         
         # If delay specified sleep for that while
         sleep(database_response.request.art_delay)
+
+        response = Response(database_response.request, True)
+
+        if(database_response.request.read_only):
+            send(('FROM_WORKER_RESPONSE', response), to = (coordinators[0]))
+            send(('OUTCOME', response), to = (response.request.client))
+        else:
+            send(('FROM_WORKER_RESPONSE', response), to = (coordinators[1]))
+
+        return
 
         """
         Evaluating the policy here

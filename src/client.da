@@ -98,20 +98,17 @@ class Client(process):
 
 		recv_sequence = recv_sequence + 1
 		
-		print("sending")
 		send(('FROM_CLIENT', request),to=(coordinators[0]))
 
 	def run():
 
-		print("client run called")
 		#sleep(my_index / 100.0)
 
 		sendtask()
 		
-		await(1 == 2)
+		await(num_requests == current_request_index)
 
 	def receive(msg=('OUTCOME', response), from_ = p):
-		print("Received From Worker in Client")
 		
 		logger.info("[Client] Final Response received (UUID: {0}) from Subject Coord With Result: {1}"
 			.format(response.request.uuid, response.result))

@@ -9,8 +9,6 @@ import pprint
 
 class Database(process):
     def setup(config):
-        print("database called")
-        
         self.logger = logging.getLogger('sLogger')
         self.database_init_file = str(config.get("setup", "database_init_file"))
         self.root = ET.parse(database_init_file).getroot()
@@ -33,8 +31,6 @@ class Database(process):
                     self.database[v] = innerdict
 
         await(received(('EXIT',)))
-        print("exiting")
-
         pp = pprint.PrettyPrinter(indent=4)
         logger.info("[Database Emulator] Dumping database contents to log file\n{0}"
             .format(pp.pformat(self.database)))
@@ -47,53 +43,56 @@ class Database(process):
         logger.debug("[Database Emulator] Receiving request (seq. {0}) from Worker: {1}"
             .format(recv_sequence, request))
         recv_sequence += 1
+        
         db_response = DataBaseResponse(request)
-        db_response_sub_attribute_map = {}
+        db_response_ob1_attribute_map = {}
 
         """
         Retrieving the attributes keys from the database
         For both Subject and Resource
         """
         try:
-            subject_database_attribute_keys = set(self.database[str(request.subject_id)].keys())
+            ob1_database_attribute_keys = set(self.database[str(request.object1_id)].keys())
 
             """
             Finding the diff of the attributes which are present
             in the database and in the tentative update map in the request
             for the subject
             """
-            sub_attribute_diff = set(subject_database_attribute_keys - set(request.sub_tent_updates.keys()))
-            for attr in sub_attribute_diff:
-                db_response_sub_attribute_map[attr] = self.database[str(request.subject_id)][attr]
+            ob1_attribute_diff = set(ob1_database_attribute_keys - set(request.cached_updates[1].keys()))
+
+            for attr in ob1_attribute_diff:
+                db_response_ob1_attribute_map[attr] = self.database[str(request.object1_id)][attr]
         except:
             db_response.result = False
 
-        db_response_res_attribute_map = {}
+        db_response_ob2_attribute_map = {}
 
         try:
-            resource_database_attribute_keys = set(self.database[str(request.resource_id)].keys())
+            ob2_database_attribute_keys = set(self.database[str(request.object2_id)].keys())
             """
             Finding the diff of the attributes which are present
             in the database and in the tentative update map in the request
             for the Resource
             """
 
-            res_attribute_diff = set(resource_database_attribute_keys - set(request.res_tent_updates.keys()))
+            ob2_attribute_diff = set(ob2_database_attribute_keys - set(request.cached_updates[1].keys()))
 
-            for attr in res_attribute_diff:
-                db_response_res_attribute_map[attr] = self.database[str(request.resource_id)][attr]
+            for attr in ob2_attribute_diff:
+                db_response_ob2_attribute_map[attr] = self.database[str(request.object2_id)][attr]
         except:
             db_response.result = False
 
         #Populating the subject and resource attributes maps which have been
         #calculated earlier in this function
-        db_response.sub_database_attributes = db_response_sub_attribute_map
-        db_response.res_database_attributes = db_response_res_attribute_map
+        db_response.database_attributes[0] = db_response_ob1_attribute_map
+        db_response.database_attributes[1] = db_response_ob2_attribute_map
         logger.info("[Database Emulator] Sending database response (UUID: {0}) to Worker"
             .format(db_response.request.uuid))
         logger.debug("[Database Emulator] Sending database response (seq. {0}) to Worker: {1}"
             .format(send_sequence, db_response))
         send_sequence += 1
+
         send(('FROM_DATABASE',db_response), to = p)
 
     """"

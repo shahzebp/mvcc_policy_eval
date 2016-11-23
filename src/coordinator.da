@@ -123,26 +123,20 @@ class Coordinator(process):
         if (request.subject_id in sub_tent_cache):
             for k,v in sub_tent_cache[request.subject_id].items():
                 request.sub_tent_updates[k] = v 
-
+        '''
         request.timestamp   = time.time()
 
-        rid = request.resource_id % len(coordinators)
+        #rid = request.resource_id % len(coordinators)
 
         # Add request to the sequence queue to process it in the sequence
-        current_request_sequence = deque()
-        if (request.subject_id in request_sequence):
-            current_request_sequence = request_sequence[request.subject_id]
-
-        current_request_sequence.append(request)
-        request_sequence[request.subject_id] = current_request_sequence
-
+       
         logger.info("[Subject Coord] Sending request (UUID: {0}) to Resource Coord"
             .format(request.uuid))
         logger.debug("[Subject Coord] Sending request (seq. {0}) to Resource Coord: {1}"
             .format(send_sequence, request))
 
         send_sequence =  send_sequence + 1
-        '''
+        
         if(request.read_only):
             send(('FROM_COORD_1', request), to=(coordinators[1]))
         else:
@@ -151,32 +145,30 @@ class Coordinator(process):
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
         print("from client received")
-        '''
+        
         logger.info("[Subject Coord] Request received (UUID: {0}) from Client"
             .format(request.uuid))
         logger.debug("[Subject Coord] Request received (seq. {0}) from Client: {1}"
             .format(recv_sequence, request))
         
         recv_sequence = recv_sequence + 1
-        '''
-        request.owner       = p
+        
+        request.owner = p
         
         entrypoint(request)
-
     
     # Receive the request from subject coordinator
     def receive(msg=('FROM_COORD_1', request), from_=p):
 
         print("from coord1 received")
-
-        '''
+        
         logger.info("[Resource Coord] Request received (UUID: {0}) from Sub Coord"
             .format(request.uuid))
         logger.debug("[Resource Coord] Request received (seq. {0}) from Sub Coord {1}"
             .format(recv_sequence, request))
 
         recv_sequence = recv_sequence + 1
-
+        '''
         if request.resource_id in res_main_cache:
             keys_to_flush = []
 
@@ -192,17 +184,17 @@ class Coordinator(process):
                     # Don't append it.
                     # It is safe to delete it from cache as well.
                     #keys_to_flush.append(k)
-
+        
         if request.resource_id in res_main_cache:
             request.res_tent_updates = res_main_cache[request.resource_id]
-
+        '''
         logger.info("[Resource Coord] Sending request (UUID: {0}) to Worker"
             .format(request.uuid))
         logger.debug("[Resource Coord] Sending request (seq. {0}) to Worker: {1}"
             .format(send_sequence, request))
 
         send_sequence =  send_sequence + 1
-        '''
+        
         send(('FROM_COORD', request), to = (workers[0]))
 
         '''

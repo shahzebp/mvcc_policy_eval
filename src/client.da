@@ -85,7 +85,7 @@ class Client(process):
 
 	def sendtask():
 
-		request = Request(0, 1, "view") #total_requests[current_request_index]
+		request = total_requests[current_request_index]
 		request.client = self
 
 		

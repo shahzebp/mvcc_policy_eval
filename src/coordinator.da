@@ -138,9 +138,9 @@ class Coordinator(process):
         send_sequence =  send_sequence + 1
         
         if(request.read_only):
-            send(('FROM_COORD_1', request), to=(coordinators[1]))
+            send(('FROM_COORD_REQUEST', request), to=(coordinators[1]))
         else:
-            send(('FROM_COORD_2', request), to=(coordinators[0]))
+            send(('FROM_COORD_REQUEST', request), to=(coordinators[0]))
 
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
@@ -158,7 +158,7 @@ class Coordinator(process):
         entrypoint(request)
     
     # Receive the request from subject coordinator
-    def receive(msg=('FROM_COORD_1', request), from_=p):
+    def receive(msg=('FROM_COORD_REQUEST', request), from_=p):
 
         print("from coord1 received")
         
@@ -209,8 +209,6 @@ class Coordinator(process):
     from Corodinator 2 to Coordinator 1. This will essentially
     happen when this is a write request.
     """
-    def receive(msg=('FROM_COORD_2', request), from_=p):
-        send(('FROM_COORD', request), to = (workers[0]))
     '''
     # Extract the next pending response to be processes from the queue and
     # process it
@@ -298,7 +296,6 @@ class Coordinator(process):
         if(response.request.read_only == False):
             send(('FROM_COORD_2_RESPONSE', response), to = (coordinators[0]))
             send(('OUTCOME', response), to = (response.request.client))
-
         
         logger.info("[Subject Coord] Response received (UUID. {0}) from Worker"
             .format(response.request.uuid))

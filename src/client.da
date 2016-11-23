@@ -86,8 +86,8 @@ class Client(process):
 	def sendtask():
 
 		request = total_requests[current_request_index]
-		request.client = self
 
+		request.client = self
 		
 		rid = request.object1_id % len(coordinators)
 

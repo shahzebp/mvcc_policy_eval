@@ -164,9 +164,11 @@ class Worker(process):
         send_sequence += 1
 
         response = Response(request, True)
-        send(('FROM_WORKER', response), to = (coordinators[1]))
-        send(('OUTCOME', response), to = (request.client))
-    
+        if(request.read_only):
+            send(('FROM_WORKER', response), to = (coordinators[0]))
+            send(('OUTCOME', response), to = (request.client))
+        else:
+            send(('FROM_WORKER', response), to = (coordinators[1]))
 
     def receive(msg=('FROM_DATABASE', database_response), from_ = p):
 

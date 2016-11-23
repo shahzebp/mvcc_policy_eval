@@ -86,6 +86,7 @@ class Client(process):
 	def sendtask():
 
 		request = Request(0, 1, "view") #total_requests[current_request_index]
+		request.uuid = 10
 		request.client = self
 
 		

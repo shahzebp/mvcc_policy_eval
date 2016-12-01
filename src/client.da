@@ -89,6 +89,8 @@ class Client(process):
 
 		request.client = self
 		
+		request.mightWriteObj = []
+
 		rid = request.object1_id % len(coordinators)
 
 		logger.info("[Client] Request sent (UUID: {0}) to object1 Coord"
@@ -98,7 +100,19 @@ class Client(process):
 
 		recv_sequence = recv_sequence + 1
 		
-		send(('FROM_CLIENT', request),to=(coordinators[0]))
+		to_write_obj = len(request.mightWriteObj)
+
+		coordinator_id = 0
+
+		if (to_write_obj == 0 or to_write_obj == 2):
+			coordinator_id = request.object1_id % len(coordinators)
+		else:
+			if (request.object1_id == request.mightWriteObj):
+				coordinator_id = request.object2_id % len(coordinators)
+			else:
+				coordinator_id = request.object1_id % len(coordinators)
+
+		send(('FROM_CLIENT', request),to=(coordinators[coordinator_id]))
 
 	def run():
 

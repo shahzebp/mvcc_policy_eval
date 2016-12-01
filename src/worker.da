@@ -60,6 +60,7 @@ class Worker(process):
             .format(recv_sequence, request))
 
         recv_sequence += 1
+
         logger.info("[Worker] Sending request (UUID: {0}) to Database Emulator"
             .format(request.uuid))
         logger.debug("[Worker] Sending request (seq. {0}) to Database Emulator: {1}"
@@ -74,10 +75,11 @@ class Worker(process):
             .format(database_response.request.uuid))
         logger.debug("[Worker] Receiving response (seq. {0}) from Database Emulator: {1}"
             .format(recv_sequence, database_response))
+        
         recv_sequence += 1
         
         # If delay specified sleep for that while
-        sleep(database_response.request.art_delay)
+        #sleep(database_response.request.art_delay)
 
         response = Response(database_response.request, True)
 

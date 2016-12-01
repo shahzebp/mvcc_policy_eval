@@ -34,25 +34,19 @@ class Coordinator(process):
         
         # Each coordinator intantiates its own workers
         # It is one as of now
-        
-        self.worker_index   = 0
 
-        num_worker = 2 #int(config.get("setup", "num_worker_per_coord"))
-
-        workers_set     = new(Worker, num = num_worker)
-        self.workers    = list(workers_set)
-        setup(self.workers, (coordinators, database, config))
-        start(workers)
+        self.worker     = new(Worker, num = 1)
+        setup(self.worker, (coordinators, database, config))
+        start(worker)
 
     def run():
 
         # Await till exit is issued by the master 
-    
         await(received(('EXIT',)))
             
         logger.info("Exiting the Coordinators")
         # Issue await to the clients
-        send(('EXIT',), to=(workers))
+        send(('EXIT',), to=(worker))
 
     # Initial process when request is received.
     # This is also the point of start for restart
@@ -67,17 +61,23 @@ class Coordinator(process):
 
         send_sequence =  send_sequence + 1
         
-        if(request.read_only):
-            send(('FROM_COORD_REQUEST', request), to=(coordinators[1]))
+        coordinator_id = 0
+
+        to_writeObj = len(request.mightWriteObj)
+
+        if(to_writeObj == 0 or to_writeObj == 2):
+            coordinator_id = request.object2_id % len(coordinators)
         else:
-            send(('FROM_COORD_REQUEST', request), to=(coordinators[0]))
+            coordinator_id = request.mightWriteObj[0] % len(coordinators)
+            
+        send(('FROM_COORD_REQUEST', request), to=(coordinators[coordinator_id]))
 
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
         
-        logger.info("[object1 Coord] Request received (UUID: {0}) from Client"
+        logger.info("[Coord 1] Request received (UUID: {0}) from Client"
             .format(request.uuid))
-        logger.debug("[object1 Coord] Request received (seq. {0}) from Client: {1}"
+        logger.debug("[Coord 1] Request received (seq. {0}) from Client: {1}"
             .format(recv_sequence, request))
         
         recv_sequence = recv_sequence + 1
@@ -103,7 +103,7 @@ class Coordinator(process):
 
         send_sequence =  send_sequence + 1
         
-        send(('FROM_COORD', request), to = (workers[0]))
+        send(('FROM_COORD', request), to = (worker))
 
     def receive(msg=('FROM_COORD_2_RESPONSE', response), from_=p):
         pass

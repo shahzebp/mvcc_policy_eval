@@ -142,7 +142,6 @@ class Coordinator(process):
 
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
-        print("from client received")
         
         logger.info("[Subject Coord] Request received (UUID: {0}) from Client"
             .format(request.uuid))
@@ -157,8 +156,6 @@ class Coordinator(process):
     
     # Receive the request from subject coordinator
     def receive(msg=('FROM_COORD_REQUEST', request), from_=p):
-
-        print("from coord1 received")
         
         logger.info("[Resource Coord] Request received (UUID: {0}) from Sub Coord"
             .format(request.uuid))
@@ -288,7 +285,6 @@ class Coordinator(process):
     # This response is the evaluation result for the request
     # There exists a compostion of request inside response
     def receive(msg=('FROM_WORKER_RESPONSE', response), from_=p):
-        print("from worker received")
 
         # Sending the message to the 1st corordinator in case this was a write request
         if(response.request.read_only == False):

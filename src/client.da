@@ -55,29 +55,29 @@ class Client(process):
 		self.recv_sequence = 1
 
 		for i in request_list:
-			sub_id = int(config.get(i, "subject_id"))
-			res_id = int(config.get(i, "resource_id"))
+			object1_id = int(config.get(i, "object1_id"))
+			object2_id = int(config.get(i, "object2_id"))
 			action = str(config.get(i, "action"))
 			
 			art_delay = 0
-			res_delay = 0
+			object2_delay = 0
 
 			try:
 				art_delay = float(config.get(i, "art_delay"))
-				res_delay = float(config.get(i, "resource_delay"))
+				object2_delay = float(config.get(i, "object2_delay"))
 			except:
 				pass
 			
 			uuid = hashlib.md5()
-			uuid.update(str(sub_id).encode())
-			uuid.update(str(res_id).encode())
+			uuid.update(str(object1_id).encode())
+			uuid.update(str(object2_id).encode())
 			uuid.update(str(action).encode())
 			uuid.update(str(time.time()).encode())
 			uuid.update(str(my_index).encode())
 
-			request = Request(sub_id, res_id, action)
+			request = Request(object1_id, object2_id, action)
 			request.art_delay = art_delay
-			request.res_delay = res_delay
+			request.object2_delay = object2_delay
 
 			request.uuid = uuid.hexdigest()
 
@@ -91,9 +91,9 @@ class Client(process):
 		
 		rid = request.object1_id % len(coordinators)
 
-		logger.info("[Client] Request sent (UUID: {0}) to Subject Coord"
+		logger.info("[Client] Request sent (UUID: {0}) to object1 Coord"
 			.format(request.uuid))
-		logger.debug("[Client] Request sent (seq. {0}) to Subject Coord {1}"
+		logger.debug("[Client] Request sent (seq. {0}) to object1 Coord {1}"
 			.format(send_sequence, request))
 
 		recv_sequence = recv_sequence + 1
@@ -110,9 +110,9 @@ class Client(process):
 
 	def receive(msg=('OUTCOME', response), from_ = p):
 		
-		logger.info("[Client] Final Response received (UUID: {0}) from Subject Coord With Result: {1}"
+		logger.info("[Client] Final Response received (UUID: {0}) from object1 Coord With Result: {1}"
 			.format(response.request.uuid, response.result))
-		logger.debug("[Client] Response received (seq. {0}) from Subject Coord {1}"
+		logger.debug("[Client] Response received (seq. {0}) from object1 Coord {1}"
 			.format(recv_sequence, response))
 
 		recv_sequence = recv_sequence + 1

@@ -49,7 +49,7 @@ class Database(process):
 
         """
         Retrieving the attributes keys from the database
-        For both Subject and Resource
+        For both object1 and object2
         """
         try:
             ob1_database_attribute_keys = set(self.database[str(request.object1_id)].keys())
@@ -57,7 +57,7 @@ class Database(process):
             """
             Finding the diff of the attributes which are present
             in the database and in the tentative update map in the request
-            for the subject
+            for the object1
             """
             ob1_attribute_diff = set(ob1_database_attribute_keys - set(request.cached_updates[1].keys()))
 
@@ -73,7 +73,7 @@ class Database(process):
             """
             Finding the diff of the attributes which are present
             in the database and in the tentative update map in the request
-            for the Resource
+            for the object2
             """
 
             ob2_attribute_diff = set(ob2_database_attribute_keys - set(request.cached_updates[1].keys()))
@@ -83,7 +83,7 @@ class Database(process):
         except:
             db_response.result = False
 
-        #Populating the subject and resource attributes maps which have been
+        #Populating the object1 and object2 attributes maps which have been
         #calculated earlier in this function
         db_response.database_attributes[0] = db_response_ob1_attribute_map
         db_response.database_attributes[1] = db_response_ob2_attribute_map
@@ -101,11 +101,11 @@ class Database(process):
 
     def commit_to_db(attributes_to_update):
         logger.debug("[Database Emulator] Commiting changes to database %s", attributes_to_update)
-        res_sub_id, value = attributes_to_update.popitem()
-        self.database[res_sub_id].update(value)
+        object2_object1_id, value = attributes_to_update.popitem()
+        self.database[object2_object1_id].update(value)
 
     """"
-    This function recives from both the resource and the subject corordinator
+    This function recives from both the object2 and the object1 corordinator
     the attributes that need to the flushed to the database and starts a thread
     which calls a function (after a certain random time between mindblatency and maxdblatency)
     to commit the update values to the database

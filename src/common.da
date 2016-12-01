@@ -8,7 +8,7 @@ class Request(object):
         self.client             = None
         self.timestamp          = None
         self.art_delay          = 0
-        self.res_delay          = 0
+        self.object2_delay          = 0
         self.read_only          = True
 
     def __str__(self):
@@ -36,32 +36,32 @@ class Response(object):
         self.request            = request
         self.result             = result
 
-        self.sub_tent_attr_used = {}
-        self.res_tent_attr_used = {}
+        self.object1_tent_attr_used = {}
+        self.object2_tent_attr_used = {}
 
-        self.sub_db_attr_used   = {}
-        self.res_db_attr_used   = {}
+        self.object1_db_attr_used   = {}
+        self.object2_db_attr_used   = {}
 
-        self.sub_to_update      = {}
-        self.res_to_update      = {}
+        self.object1_to_update      = {}
+        self.object2_to_update      = {}
 
     def __str__(self):
         return (self.request.__str__() + \
-                "Sub attribs used from Cache: {0} \
-                \nRes attribs used from Cache: {1} \
-                \nSub attribs used from DB: {2} \
-                \nRes attribs used from DB: {3} \
-                \nSub attribs to Update: {4} \
-                \nRes attrubs to Update: {5} \
+                "object1 attribs used from Cache: {0} \
+                \nobject2 attribs used from Cache: {1} \
+                \nobject1 attribs used from DB: {2} \
+                \nobject2 attribs used from DB: {3} \
+                \nobject1 attribs to Update: {4} \
+                \nobject2 attrubs to Update: {5} \
                 \nResult: {6} \
                 \n"
                 .format(
-                    self.sub_tent_attr_used,
-                    self.res_tent_attr_used,
-                    self.sub_db_attr_used,
-                    self.res_db_attr_used,
-                    self.sub_to_update,
-                    self.res_to_update,
+                    self.object1_tent_attr_used,
+                    self.object2_tent_attr_used,
+                    self.object1_db_attr_used,
+                    self.object2_db_attr_used,
+                    self.object1_to_update,
+                    self.object2_to_update,
                     self.result))
 
 class DataBaseResponse(object):
@@ -82,23 +82,23 @@ class DataBaseResponse(object):
                     self.result))
 
 class Rule(object):
-    def __init__(self, subject_condition, resource_condition, action, subject_update, resource_update):
-        self.subject_condition = subject_condition
-        self.resource_condition = resource_condition
+    def __init__(self, object1_condition, object2_condition, action, object1_update, object2_update):
+        self.object1_condition = object1_condition
+        self.object2_condition = object2_condition
         self.action = action
-        self.subject_update = subject_update
-        self.resource_update = resource_update
+        self.object1_update = object1_update
+        self.object2_update = object2_update
 
     def __str__(self):
-        return ("\nSubject Condition: {0} \
-                 \nResource Condition: {1} \
+        return ("\nobject1 Condition: {0} \
+                 \nobject2 Condition: {1} \
                  \nAction: {2} \
-                 \nSubject Update: {3} \
-                 \nResource Update: {4} \
+                 \nobject1 Update: {3} \
+                 \nobject2 Update: {4} \
                  \n"
                 .format(
-                    self.subject_condition,
-                    self.resource_condition,
+                    self.object1_condition,
+                    self.object2_condition,
                     self.action,
-                    self.subject_update,
-                        self.resource_update))
+                    self.object1_update,
+                        self.object2_update))

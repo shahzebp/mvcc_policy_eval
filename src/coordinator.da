@@ -53,84 +53,16 @@ class Coordinator(process):
         logger.info("Exiting the Coordinators")
         # Issue await to the clients
         send(('EXIT',), to=(workers))
-        
-    '''
-    def attributes_in_sync(map1, map2): 
 
-        # Timestamp for the cache entries should be same
-        # Else it means the main cache has been updated
-        for key in map1:
-            timestamp1 = map1[key][1]
-
-            if key in map2:
-                timepstamp2 = map2[key][1]
-
-                if(timestamp1 != timepstamp2):
-                    logger.error("Conflict Reason: Tentative Update Dependency")
-                    logger.debug("%s \nand \n%s ", map1, map2)
-                    return False
-            else:
-                return False
-
-        return True
-
-    # Check if value used from DB got updated in cache meanwhile
-    def attributes_clash(map1, map2):
-        for key in map1:
-            if key in map2:
-                logger.error("Conflict Reason: Attribute Conflict - Stale Database Read")
-                logger.debug("%s \nand \n%s ", map1, map2)
-
-                return False
-
-        return True
-
-    # Check conflict for read attributes both from cache and database
-    def check_conflict(latest_tentative_map, sent_tent_map, changelist_map): 
-
-        # If there was no cache update sent
-        if not sent_tent_map:
-            return attributes_clash(changelist_map, latest_tentative_map)
-        # Else compare cache updates as well
-        else:
-            return (attributes_in_sync(sent_tent_map, latest_tentative_map)
-                and attributes_clash(changelist_map, latest_tentative_map))
-
-    '''
     # Initial process when request is received.
     # This is also the point of start for restart
     def entrypoint(request):
-        '''
-        if request.subject_id in sub_main_cache:
-            keys_to_flush = []
-            for k,v in sub_main_cache[request.subject_id].items():
 
-                # Use only if this update has not yet been committed to DB
-                # We know this by maxdblatency
-
-                if (v[1] + maxdblatency >= time.time()):
-                    request.sub_tent_updates[k] = v
-                #else:
-                    # This update has been committed it db.
-                    # Don't append it.
-                    # It is safe to delete it from cache as well.
-
-        # overwrite any update if a tentative update exists for it
-        # because the ones in tentative are more recent
-
-        if (request.subject_id in sub_tent_cache):
-            for k,v in sub_tent_cache[request.subject_id].items():
-                request.sub_tent_updates[k] = v 
-        '''
         request.timestamp   = time.time()
 
-        #rid = request.resource_id % len(coordinators)
-
-        # Add request to the sequence queue to process it in the sequence
-       
-        logger.info("[Subject Coord] Sending request (UUID: {0}) to Resource Coord"
+        logger.info("[object1 Coord] Sending request (UUID: {0}) to object2 Coord"
             .format(request.uuid))
-        logger.debug("[Subject Coord] Sending request (seq. {0}) to Resource Coord: {1}"
+        logger.debug("[object1 Coord] Sending request (seq. {0}) to object2 Coord: {1}"
             .format(send_sequence, request))
 
         send_sequence =  send_sequence + 1
@@ -143,9 +75,9 @@ class Coordinator(process):
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
         
-        logger.info("[Subject Coord] Request received (UUID: {0}) from Client"
+        logger.info("[object1 Coord] Request received (UUID: {0}) from Client"
             .format(request.uuid))
-        logger.debug("[Subject Coord] Request received (seq. {0}) from Client: {1}"
+        logger.debug("[object1 Coord] Request received (seq. {0}) from Client: {1}"
             .format(recv_sequence, request))
         
         recv_sequence = recv_sequence + 1
@@ -154,134 +86,29 @@ class Coordinator(process):
         
         entrypoint(request)
     
-    # Receive the request from subject coordinator
+    # Receive the request from object1 coordinator
     def receive(msg=('FROM_COORD_REQUEST', request), from_=p):
         
-        logger.info("[Resource Coord] Request received (UUID: {0}) from Sub Coord"
+        logger.info("[object2 Coord] Request received (UUID: {0}) from object1 Coord"
             .format(request.uuid))
-        logger.debug("[Resource Coord] Request received (seq. {0}) from Sub Coord {1}"
+        logger.debug("[object2 Coord] Request received (seq. {0}) from object1 Coord {1}"
             .format(recv_sequence, request))
 
         recv_sequence = recv_sequence + 1
-        '''
-        if request.resource_id in res_main_cache:
-            keys_to_flush = []
 
-            for k,v in res_main_cache[request.resource_id].items():
-
-                # Use only if this update has not yet been committed to DB
-                # We know this by maxdblatency
-
-                if (v[1] + maxdblatency >= time.time()):
-                    request.res_tent_updates[k] = v
-                #else:
-                    # This update has been committed it db.
-                    # Don't append it.
-                    # It is safe to delete it from cache as well.
-                    #keys_to_flush.append(k)
-        
-        if request.resource_id in res_main_cache:
-            request.res_tent_updates = res_main_cache[request.resource_id]
-        '''
-        logger.info("[Resource Coord] Sending request (UUID: {0}) to Worker"
+        logger.info("[object2 Coord] Sending request (UUID: {0}) to Worker"
             .format(request.uuid))
-        logger.debug("[Resource Coord] Sending request (seq. {0}) to Worker: {1}"
+        logger.debug("[object2 Coord] Sending request (seq. {0}) to Worker: {1}"
             .format(send_sequence, request))
 
         send_sequence =  send_sequence + 1
         
         send(('FROM_COORD', request), to = (workers[0]))
 
-        '''
-        # Round robin worker usage for fair share distribution
-        worker_index = worker_index + 1
-        if worker_index == len(workers):
-            worker_index = 0
-        '''
-
-    """
-    This function gets called when request is going
-    from Corodinator 2 to Coordinator 1. This will essentially
-    happen when this is a write request.
-    """
-    '''
-    # Extract the next pending response to be processes from the queue and
-    # process it
-    def extract_next_response():
-
-        if (response_queue.empty() == False):
-
-            response = response_queue.get()[1]
-
-            if (response.request.subject_id in request_sequence):
-                current_request_sequence = request_sequence[response.request.subject_id]
-                if (current_request_sequence[0].timestamp < response.request.timestamp):
-                    response_queue.put((response.request.timestamp, response))
-                else:
-                    process_response(response)
-            else:
-                process_response(response)
-
-
-    def process_response(response):
-        logger.debug("[Subject Coord] Processing response: %s ", str(response))
-
-        logger.debug("[Subject Coord] Checking subject conflicts: %s ", str(response))
-        retval = True
-
-        # Tentative updates got reverted. Panic!!!!!
-        if (bool(response.sub_tent_attr_used) == True):
-            if (response.request.subject_id not in sub_main_cache):
-                logger.error("[Subject Coord] Tentative Dependency Conflict: %s ", str(response))
-                retval = False
-        else:        
-            if response.request.subject_id in sub_main_cache:
-                retval = check_conflict(sub_main_cache[response.request.subject_id],
-                                        response.sub_tent_attr_used,
-                                        response.sub_db_attr_used)
-
-        if (retval == True):
-
-            # Execute tentative updates for subject attributes
-
-            if bool(response.sub_to_update) == True:
-                current_tent_map = {}
-
-                if response.request.subject_id in sub_tent_cache:
-                    current_tent_map =  sub_tent_cache[response.request.subject_id]
-
-                for k,v in response.sub_to_update.items():
-                    current_tent_map[k] = (v, time.time())
-
-                    sub_tent_cache[response.request.subject_id] = current_tent_map
-
-            # Check for resource conclicts
-            rid = response.request.resource_id % len(coordinators)
-
-            logger.info("[Subject Coord] Sending response (UUID: {0}) to Resource Coord"
-                .format(response.request.uuid))
-            logger.debug("[Subject Coord] Sending response (seq. {0}) to Resource Coord: {1}"
-                .format(send_sequence, response))
-
-            send_sequence =  send_sequence + 1
-            
-            send(('FROM_SUBJECT_COORD_RESPONSE', response), to=(coordinators[rid]))
-            
-        else:
-            # Restart
-            logger.error("[Subject Coord] Restarting: Subject conflict detected (UUID: {0})"
-                .format(response.request.uuid))
-            
-            request_sequence[response.request.subject_id].popleft()
-            entrypoint(response.request)
-
-            extract_next_response()
-    '''
-
     def receive(msg=('FROM_COORD_2_RESPONSE', response), from_=p):
         pass
 
-    # Subject cooridinator receives response from the worker
+    # object1 cooridinator receives response from the worker
     # This response is the evaluation result for the request
     # There exists a compostion of request inside response
     def receive(msg=('FROM_WORKER_RESPONSE', response), from_=p):
@@ -291,156 +118,9 @@ class Coordinator(process):
             send(('FROM_COORD_2_RESPONSE', response), to = (coordinators[0]))
             send(('OUTCOME', response), to = (response.request.client))
         
-        logger.info("[Subject Coord] Response received (UUID. {0}) from Worker"
+        logger.info("[object1 Coord] Response received (UUID. {0}) from Worker"
             .format(response.request.uuid))
-        logger.debug("[Subject Coord] Response received (seq. {0}) from Worker: {1}"
+        logger.debug("[object1 Coord] Response received (seq. {0}) from Worker: {1}"
             .format(recv_sequence, response))
         
         recv_sequence = recv_sequence + 1
-
-        # Process the response if there are no response pending ahead of it
-        # in the sequence of the respective requests arrived
-        '''
-        if (response.request.subject_id in request_sequence):
-
-            current_request_sequence = request_sequence[response.request.subject_id]
-
-            if (current_request_sequence[0].timestamp < response.request.timestamp):
-                
-                logger.info("[Subject Coord] Enqueuing response in response queue %s ",
-                    response.request.uuid)           
-                logger.debug("[Subject Coord] Enqueing response is %s ", response)
-                
-                response_queue.put((response.request.timestamp, response))
-            else:
-                process_response(response)
-        else:
-            process_response(response)
-        '''
-
-    '''
-    # Resource cooridinator receives the response to check if there exists 
-    # resource conflicts
-    # It sends the result to the subject cooridnator
-    def receive(msg=('FROM_SUBJECT_COORD_RESPONSE', response), from_ = p):
-        logger.info("[Resource Coord] Response received (UUID: {0}) from Subject Coord"
-            .format(response.request.uuid))
-        logger.debug("[Resource Coord] Response received (seq. {0}) from Subject Coord: {1}"
-            .format(recv_sequence, response))
-
-        recv_sequence = recv_sequence + 1
-
-        logger.debug("Checking resource conflict: {0}".format(response))
-
-        retval = True
-
-        sleep(response.request.res_delay)
-
-        # TODO do we need to make this check? 
-        if response.request.resource_id in res_main_cache:
-            retval = check_conflict(
-                        res_main_cache[response.request.resource_id],
-                        response.res_tent_attr_used,
-                        response.res_db_attr_used)
-
-        if (retval == True):
-
-            if bool(response.res_to_update) == True:
-                # Execute tentative updates for resource attributes
-                current_tent_map = {}
-                if response.request.resource_id in res_main_cache:
-                    current_tent_map =  res_main_cache[response.request.resource_id]
-            
-                for k,v in response.res_to_update.items():
-                    current_tent_map[k] = (v, time.time())
-
-                res_main_cache[response.request.resource_id] = current_tent_map
-
-                logger.info("[Resource Coord] Sending resource updates to commit to DB (UUID: %s)",
-                            response.request.uuid)
-                logger.debug("Resource Updates Commited to DB%s",
-                            response.res_to_update)
-                commit_to_db = {}
-                commit_to_db[str(response.request.resource_id)] = response.res_to_update
-                send_sequence =  send_sequence + 1
-                send(('FROM_COORDINATOR_ATTR_UPDATE', commit_to_db), to = (database))
-        
-        # Need to send result to subject in either conflict or no conflict case
-
-        rid = response.request.subject_id % len(coordinators)
-
-        logger.info("[Resource Coord] Sending response (UUID: {0}) to Subject Coord"
-            .format(response.request.uuid))
-        logger.debug("[Resource Coord] Sending response (seq. {0}) to Subject Coord: {1}"
-            .format(send_sequence, response))
-
-        send_sequence =  send_sequence + 1
-
-        send(('FROM_RESOURCE_COORD_RESPONSE', response, retval), to=(coordinators[rid]))
-
-    # Subject coordinator receives the response resource conflict evalution
-    # result frm resource coordinator.
-    def receive(msg=('FROM_RESOURCE_COORD_RESPONSE', response, retval), from_ = p):
-        logger.info("[Subject Coord] Response received (UUID: {0}) from Resource Coord"
-            .format(response.request.uuid))
-        logger.debug("[Subject Coord] Response received (seq. {0}) from Resource Coord: {1}"
-            .format(recv_sequence, response))
-
-        recv_sequence = recv_sequence + 1
-
-        # if no resource conflict exists, it sends response to client and executs
-        # db updates
-        if (True == retval):
-            # No conflict, propapage the tentative subject updates to main
-            logger.info("[Subject Coord] Evaluation complete for request(UUID: %s)",
-                            response.request.uuid)
-            logger.debug("[Subject Coord] Response is: %s", response)
-
-            # Propagate subject tentative updates to main cache
-
-            if (bool(response.sub_to_update) == True) :
-                current_sub_map = {}
-                
-                if response.request.subject_id in sub_main_cache:
-                    current_sub_map = sub_main_cache[response.request.subject_id]
-
-                current_sub_map.update(sub_tent_cache[response.request.subject_id])
-
-                sub_main_cache[response.request.subject_id] = current_sub_map
-
-                # Revert the sub_tent cache for this id
-                sub_tent_cache[response.request.subject_id] = {}
-
-                # Doing database updates
-                logger.info("[Subject Coord] Sending subject updates to commit to DB (UUID: %s)",
-                            response.request.uuid)
-                logger.debug("Subject Updates Commited to DB%s",
-                            response.sub_to_update)
-                send_sequence =  send_sequence + 1
-                commit_to_db = {}
-                commit_to_db[str(response.request.subject_id)] = response.sub_to_update
-                send(('FROM_COORDINATOR_ATTR_UPDATE', commit_to_db), to = (database))
-
-            # Sending response to subject coordinator about conflict status
-            logger.info("[Subject Coord] Sending response (UUID: %s) to Client", response.request.uuid)
-            logger.debug("[Subject Coord] Sending Response (seq. %s) to Client:%s", send_sequence, response)
-            send_sequence =  send_sequence + 1
-            send(('OUTCOME', response), to = (response.request.owner))
-
-            request_sequence[response.request.subject_id].popleft()
-            # Process next response that was queued
-            extract_next_response()
-        else:
-            # Restart because of resource conflicts
-            logger.error("[Subject Coord] Restarting: Resource conflict detected (UUID: {0})"
-                .format(response.request.uuid))
-
-            # revert the tentative updates
-            if response.request.subject_id in sub_tent_cache:
-                sub_tent_cache[response.request.subject_id] = {}
-
-            request_sequence[response.request.subject_id].popleft()
-
-            entrypoint(response.request)
-            extract_next_response()
-        '''

@@ -83,10 +83,17 @@ class Worker(process):
 
         response = Response(database_response.request, True)
 
+        ## TODO dummy to updated object. Correct it properly
+        updated_object = response.request.object2_id
+
+        coordinator_id = 0
+
         if(database_response.request.read_only):
-            send(('FROM_WORKER_RESPONSE', response), to = (coordinators[0]))
+            coordinator_id = response.request.object2_id % len(coordinators)    
             send(('OUTCOME', response), to = (response.request.client))
         else:
-            send(('FROM_WORKER_RESPONSE', response), to = (coordinators[1]))
+            coordinator_id = updated_object % len(coordinators)
+
+        send(('FROM_WORKER_RESPONSE', response), to = (coordinators[coordinator_id]))
 
         return

@@ -60,6 +60,7 @@ class Worker(process):
             .format(recv_sequence, request))
 
         recv_sequence += 1
+
         logger.info("[Worker] Sending request (UUID: {0}) to Database Emulator"
             .format(request.uuid))
         logger.debug("[Worker] Sending request (seq. {0}) to Database Emulator: {1}"
@@ -74,17 +75,25 @@ class Worker(process):
             .format(database_response.request.uuid))
         logger.debug("[Worker] Receiving response (seq. {0}) from Database Emulator: {1}"
             .format(recv_sequence, database_response))
+        
         recv_sequence += 1
         
         # If delay specified sleep for that while
-        sleep(database_response.request.art_delay)
+        #sleep(database_response.request.art_delay)
 
         response = Response(database_response.request, True)
 
+        ## TODO dummy to updated object. Correct it properly
+        updated_object = response.request.object2_id
+
+        coordinator_id = 0
+
         if(database_response.request.read_only):
-            send(('FROM_WORKER_RESPONSE', response), to = (coordinators[0]))
+            coordinator_id = response.request.object2_id % len(coordinators)    
             send(('OUTCOME', response), to = (response.request.client))
         else:
-            send(('FROM_WORKER_RESPONSE', response), to = (coordinators[1]))
+            coordinator_id = updated_object % len(coordinators)
+
+        send(('FROM_WORKER_RESPONSE', response), to = (coordinators[coordinator_id]))
 
         return

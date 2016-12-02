@@ -4,7 +4,7 @@
         <attribute position= "employee" history=""/>
     </object>
     <object id="10">
-        <attribute position= "manager" history=""/>
+        <attribute position= "employee" history=""/>
     </object>
     <object id="11">
         <attribute position= "employee" history="bank B"/>

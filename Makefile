@@ -8,8 +8,7 @@ all: clean
 
 clean:
 	-@ rm -rf src/*.py src/*pycache*
-	-@ rm -rf log/ src/*.swp
+	-@ rm -rf log/*
 
 run:
-	-@ mkdir log
 	dar --message-buffer-size 8192 src/master.da $(ARG)

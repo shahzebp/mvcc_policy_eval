@@ -128,16 +128,16 @@ class Client(process):
 		coordinator_id = 0
 
 		if (request.swapped == 0):
-			logger.info("[Client] Request sent (UUID: {0}) to object1 Coord"
-				.format(request.uuid))
-			logger.debug("[Client] Request sent (seq. {0}) to object1 Coord {1}"
-				.format(send_sequence, request))
+			logger.info("[Client] Request sent (UUID: {0}) to object {1} Coord"
+				.format(request.uuid, request.swapped))
+			logger.debug("[Client] Request sent (seq. {0}) to object {1} Coord {2}"
+				.format(send_sequence, request.swapped, request))
 			coordinator_id = request.object[0] % len(coordinators)
 		else:
-			logger.info("[Client] Request sent (UUID: {0}) to object2 Coord"
-				.format(request.uuid))
-			logger.debug("[Client] Request sent (seq. {0}) to object2 Coord {1}"
-				.format(send_sequence, request))
+			logger.info("[Client] Request sent (UUID: {0}) to object {1} Coord"
+				.format(request.uuid, request.swapped))
+			logger.debug("[Client] Request sent (seq. {0}) to object {1} Coord {2}"
+				.format(send_sequence, request.swapped, request))
 			coordinator_id = request.object[1] % len(coordinators)
 
 		send(('FROM_CLIENT', request),to=(coordinators[coordinator_id]))

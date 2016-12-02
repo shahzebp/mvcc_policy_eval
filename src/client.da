@@ -24,18 +24,6 @@ class Client(process):
 		self.mightWriteObject["read"]["person"] = True
 		self.mightWriteObject["read"]["bank"] = False
 
-	'''
-	def populate_to_write_object(action, object_type[0], object_type[1]):
-		if(self.mightWriteObject[action][object_type[0]] == True and
-			self.mightWriteObject[action][object_type[1]] == True):
-				return 2
-		elif(self.mightWriteObject[action][object_type[0]] == False and
-			self.mightWriteObject[action][object_type[1]] == False):
-				return 0
-		else:
-			return 1
-	'''
-
 	def setup(coordinators, my_index, config):
 		self.defReadAttrMap = collections.defaultdict(dict)
 		self.mightReadAttrMap = collections.defaultdict(dict)
@@ -131,12 +119,6 @@ class Client(process):
 			request.mightReadAttr[1] = ([])
 
 		request.client = self
-
-		logger.info("[Client] Request sent (UUID: {0}) to object1 Coord"
-			.format(request.uuid))
-		logger.debug("[Client] Request sent (seq. {0}) to object1 Coord {1}"
-			.format(send_sequence, request))
-
 		recv_sequence = recv_sequence + 1
 		
 		if(self.mightWriteObject[request.action][request.object_type[0]] == True and
@@ -144,12 +126,18 @@ class Client(process):
 			request.swapped = 1
 		
 		coordinator_id = 0
-		
-		#to_write_obj = populate_to_write_object(request.action, request.object_type[0], request.object_type[1])
 
 		if (request.swapped == 0):
+			logger.info("[Client] Request sent (UUID: {0}) to object1 Coord"
+				.format(request.uuid))
+			logger.debug("[Client] Request sent (seq. {0}) to object1 Coord {1}"
+				.format(send_sequence, request))
 			coordinator_id = request.object[0] % len(coordinators)
 		else:
+			logger.info("[Client] Request sent (UUID: {0}) to object2 Coord"
+				.format(request.uuid))
+			logger.debug("[Client] Request sent (seq. {0}) to object2 Coord {1}"
+				.format(send_sequence, request))
 			coordinator_id = request.object[1] % len(coordinators)
 
 		send(('FROM_CLIENT', request),to=(coordinators[coordinator_id]))

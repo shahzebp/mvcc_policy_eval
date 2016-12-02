@@ -88,10 +88,10 @@ class Coordinator(process):
 
         request.timestamp   = time.time()
 
-        logger.info("[Coord 2] Sending request (UUID: {0}) to object2 Coord"
-            .format(request.uuid))
-        logger.debug("[Coord 2] Sending request (seq. {0}) to object2 Coord: {1}"
-            .format(send_sequence, request))
+        logger.info("[Coord {0}] Sending request (UUID: {1}) to object {2} Coord"
+            .format(request.swapped, request.uuid, int(not request.swapped)))
+        logger.debug("[Coord {0}] Sending request (seq. {1}) to object {2} Coord: {3}"
+            .format(request.swapped, send_sequence, int(not request.swapped), request))
 
         curr_object = request.swapped
 
@@ -128,10 +128,10 @@ class Coordinator(process):
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
         
-        logger.info("[Coord 1] Request received (UUID: {0}) from Client"
-            .format(request.uuid))
-        logger.debug("[Coord 1] Request received (seq. {0}) from Client: {1}"
-            .format(recv_sequence, request))
+        logger.info("[Coord {0}] Request received (UUID: {1}) from Client"
+            .format(request.swapped, request.uuid))
+        logger.debug("[Coord {0}] Request received (seq. {1}) from Client: {2}"
+            .format(request.swapped, recv_sequence, request))
         
         recv_sequence = recv_sequence + 1
         
@@ -142,10 +142,10 @@ class Coordinator(process):
     # Receive the request from object1 coordinator
     def receive(msg=('FROM_COORD_REQUEST', request), from_=p):
         
-        logger.info("[object2 Coord] Request received (UUID: {0}) from object1 Coord"
-            .format(request.uuid))
-        logger.debug("[object2 Coord] Request received (seq. {0}) from object1 Coord {1}"
-            .format(recv_sequence, request))
+        logger.info("[object{0} Coord] Request received (UUID: {1}) from object {2} Coord"
+            .format(int(not request.swapped), request.uuid, request.swapped))
+        logger.debug("[object{0} Coord] Request received (seq. {1}) from object {2} Coord {3}"
+            .format(int(not request.swapped), recv_sequence, request.swapped, request))
 
         recv_sequence = recv_sequence + 1
 
@@ -169,10 +169,10 @@ class Coordinator(process):
 
         request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], curr_object, request)
 
-        logger.info("[object2 Coord] Sending request (UUID: {0}) to Worker"
-            .format(request.uuid))
-        logger.debug("[object2 Coord] Sending request (seq. {0}) to Worker: {1}"
-            .format(send_sequence, request))
+        logger.info("[object{0} Coord] Sending request (UUID: {1}) to Worker"
+            .format(int(not request.swapped), request.uuid))
+        logger.debug("[object{0} Coord] Sending request (seq. {1}) to Worker: {2}"
+            .format(int(not request.swapped), send_sequence, request))
 
         send_sequence =  send_sequence + 1
         

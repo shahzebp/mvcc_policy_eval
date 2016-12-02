@@ -1,6 +1,7 @@
 import sys
 
 import queue
+import uuid
 
 import logging
 import logging.handlers
@@ -23,10 +24,12 @@ class Coordinator(process):
 
         self.exit = False
         
-        main_cache = {}
+        self.main_cache = {}
 
         self.send_sequence  = 1
         self.recv_sequence  = 1
+
+        self.session_id = uuid.uuid4()
 
         self.PCA = {}
 
@@ -48,29 +51,55 @@ class Coordinator(process):
         # Issue await to the clients
         send(('EXIT',), to=(worker))
 
+    def latestVersionBefore(id, attr, ts):
+        pass
+
+    def cachedUpdates(id, request):
+        pass
+
     # Initial process when request is received.
     # This is also the point of start for restart
     def entrypoint(request):
 
         request.timestamp   = time.time()
 
-        logger.info("[object1 Coord] Sending request (UUID: {0}) to object2 Coord"
+        logger.info("[Coord 1] Sending request (UUID: {0}) to object2 Coord"
             .format(request.uuid))
-        logger.debug("[object1 Coord] Sending request (seq. {0}) to object2 Coord: {1}"
+        logger.debug("[Coord 2] Sending request (seq. {0}) to object2 Coord: {1}"
             .format(send_sequence, request))
 
+        curr_object = request.swapped
+
+
+        if (request.read_only):
+            for attr in request.defReadAttr[curr_object]:
+                latestVersionBefore(request.object[curr_object], attr, request.timestamp).rts = request.timestamp
+
+            for attr in request.mightReadAttr[curr_object]:
+                v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
+                v.add((request.uuid, request.timestamp))
+
+        else:
+            for attr in (request.defReadAttr[curr_object] + request.mightReadAttr[curr_object]):
+                v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
+                v.add((request.uuid, request.timestamp))
+        
+        request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], request)
+
+        # send this to next coordinator
         send_sequence =  send_sequence + 1
         
+
+        # Need to send to appropriate coordinator
         coordinator_id = 0
 
-        to_writeObj = len(request.mightWriteObj)
-
-        if(to_writeObj == 0 or to_writeObj == 2):
-            coordinator_id = request.object2_id % len(coordinators)
+        if (request.swapped == 0):
+            coordinator_id = request.object[1] % len(coordinators)
         else:
-            coordinator_id = request.mightWriteObj[0] % len(coordinators)
+            coordinator_id = request.object[0] % len(coordinators)
             
         send(('FROM_COORD_REQUEST', request), to=(coordinators[coordinator_id]))
+        
 
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
@@ -96,6 +125,26 @@ class Coordinator(process):
 
         recv_sequence = recv_sequence + 1
 
+        curr_object = 1
+
+        if (request.swapped == 1):
+            curr_object = 0
+
+        if (request.read_only):
+            for attr in request.defReadAttr[curr_object]:
+                latestVersionBefore(request.object[curr_object], attr, request.timestamp).rts = request.timestamp
+
+            for attr in request.mightReadAttr[curr_object]:
+                v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
+                v.add((request.uuid, request.timestamp))
+
+        else:
+            for attr in (request.defReadAttr[curr_object] + request.mightReadAttr[curr_object]):
+                v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
+                v.add((request.uuid, request.timestamp))
+
+        request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], request)
+
         logger.info("[object2 Coord] Sending request (UUID: {0}) to Worker"
             .format(request.uuid))
         logger.debug("[object2 Coord] Sending request (seq. {0}) to Worker: {1}"
@@ -105,9 +154,6 @@ class Coordinator(process):
         
         send(('FROM_COORD', request), to = (worker))
 
-    def receive(msg=('FROM_COORD_2_RESPONSE', response), from_=p):
-        pass
-
     # object1 cooridinator receives response from the worker
     # This response is the evaluation result for the request
     # There exists a compostion of request inside response
@@ -115,7 +161,6 @@ class Coordinator(process):
 
         # Sending the message to the 1st corordinator in case this was a write request
         if(response.request.read_only == False):
-            send(('FROM_COORD_2_RESPONSE', response), to = (coordinators[0]))
             send(('OUTCOME', response), to = (response.request.client))
         
         logger.info("[object1 Coord] Response received (UUID. {0}) from Worker"

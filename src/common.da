@@ -1,16 +1,26 @@
+class Version(object):
+    def __init__(self):
+        self.rts = 0
+        self.wts = 0
+        self.pendingMightWrite = 0
+
 class Request(object):
     def __init__(self, object1_id, object2_id, action):
         self.uuid               = None
-        self.object1_id         = object1_id
-        self.object2_id         = object2_id
+        self.object             = [None, None]
         self.action             = action
         self.cached_updates     = [{}, {}]
         self.mightWriteObj      = []
+        self.defReadAttr        = [[], []]
+        self.mightReadAttr      = [[], []]
         self.client             = None
         self.timestamp          = None
         self.art_delay          = 0
         self.object2_delay          = 0
         self.read_only          = True
+        self.object[0]          = object1_id
+        self.object[1]          = object2_id
+        self.swapped            = 0
 
     def __str__(self):
         return ("\nObject1 ID: {0} \
@@ -23,8 +33,8 @@ class Request(object):
                 \nUUID: {7}     \
                 \n"
                 .format(
-                    self.object1_id,
-                    self.object2_id,
+                    self.object[0],
+                    self.object[1],
                     self.action,
                     self.cached_updates[0],
                     self.cached_updates[1],

@@ -72,8 +72,15 @@ class Coordinator(process):
 
         return version
 
-    def cachedUpdates(id, request):
-        pass
+    def cachedUpdates(id, curr_object, request):
+        cachedResults = []
+        attrList = (request.defReadAttr[curr_object] + request.mightReadAttr[curr_object])
+
+        for attr in attrList:
+            cachedResults.append(latestVersionBefore(id, attr, request.timestamp))
+
+        return cachedResults
+
 
     # Initial process when request is received.
     # This is also the point of start for restart
@@ -101,7 +108,7 @@ class Coordinator(process):
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
                 v.pendingMightWrite.append((request.uuid, request.timestamp))
         
-        request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], request)
+        request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], curr_object, request)
 
         # send this to next coordinator
         send_sequence =  send_sequence + 1
@@ -160,7 +167,7 @@ class Coordinator(process):
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
                 v.pendingMightWrite.append((request.uuid, request.timestamp))
 
-        request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], request)
+        request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], curr_object, request)
 
         logger.info("[object2 Coord] Sending request (UUID: {0}) to Worker"
             .format(request.uuid))

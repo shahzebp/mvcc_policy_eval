@@ -15,6 +15,7 @@ class Request(object):
         self.object2_delay      = 0
         self.read_only          = True
         self.uuid               = None
+        self.swapped            = 0
 
     def __str__(self):
         return ("\nObject1 ID: {0} \

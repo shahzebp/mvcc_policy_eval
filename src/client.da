@@ -12,8 +12,6 @@ from common import Request, Response
 class Client(process):
 
 	def static_analysis():
-		print("Performing static analysis:", self.policy_file)
-
 		self.defReadAttrMap["read"]["bank"] = ["name"]
 		self.defReadAttrMap["read"]["person"] = ["position", "history"]
 		self.defReadAttrMap["view"]["movie"] = ["viewcount"]
@@ -22,14 +20,25 @@ class Client(process):
 		self.mightReadAttrMap["read"]["bank"] = ["account"]
 
 		self.mightWriteObject["view"]["movie"] = True
+		self.mightWriteObject["view"]["person"] = False
 		self.mightWriteObject["read"]["person"] = True
+		self.mightWriteObject["read"]["bank"] = False
+
+	def populate_to_write_object(action, object1_type, object2_type):
+		if(self.mightWriteObject[action][object1_type] == True and
+			self.mightWriteObject[action][object2_type] == True):
+				return 2
+		elif(self.mightWriteObject[action][object1_type] == False and
+			self.mightWriteObject[action][object2_type] == False):
+				return 0
+		else:
+			return 1
 
 	def setup(coordinators, my_index, config):
 		self.defReadAttrMap = collections.defaultdict(dict)
 		self.mightReadAttrMap = collections.defaultdict(dict)
 		self.mightWriteObject = collections.defaultdict(dict)
 		self.policy_file = config.get("setup", "policy_def_file")
-		self.mightWriteObj = 0
 		static_analysis()
 
 		self.logger = logging.getLogger('sLogger')
@@ -100,7 +109,6 @@ class Client(process):
 	def sendtask():
 
 		request = total_requests[current_request_index]
-		#print(self.defReadAttrMap[request.action][request.object1_type])
 		try:
 			request.defReadAttr.append(self.defReadAttrMap[request.action][request.object1_type])
 		except KeyError:
@@ -121,8 +129,7 @@ class Client(process):
 			request.mightReadAttr.append([])
 
 		request.client = self
-		
-		request.mightWriteObj = []
+
 
 		rid = request.object1_id % len(coordinators)
 
@@ -133,10 +140,13 @@ class Client(process):
 
 		recv_sequence = recv_sequence + 1
 		
-		to_write_obj = len(request.mightWriteObj)
+		if(self.mightWriteObject[request.action][request.object1_type] == True and
+			self.mightWriteObject[request.action][request.object2_type] == False):
+			request.swapped = 1
+
+		to_write_obj = populate_to_write_object(request.action, request.object1_type, request.object2_type)
 
 		coordinator_id = 0
-
 		if (to_write_obj == 0 or to_write_obj == 2):
 			coordinator_id = request.object1_id % len(coordinators)
 		else:
@@ -144,7 +154,6 @@ class Client(process):
 				coordinator_id = request.object2_id % len(coordinators)
 			else:
 				coordinator_id = request.object1_id % len(coordinators)
-
 		send(('FROM_CLIENT', request),to=(coordinators[coordinator_id]))
 
 	def run():
@@ -167,5 +176,4 @@ class Client(process):
 		current_request_index  = current_request_index + 1
 
 		if (num_requests > current_request_index):
-			print("ajshkajhdskja")
 			sendtask()

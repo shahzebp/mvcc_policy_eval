@@ -3,7 +3,7 @@ import logging.handlers
 import logging.config
 import hashlib
 import random
-
+import collections
 import time
 from time import sleep
 
@@ -13,9 +13,21 @@ class Client(process):
 
 	def static_analysis():
 		print("Performing static analysis:", self.policy_file)
-		self.mightWriteObj = 2
+
+		self.defReadAttrMap["read"]["bank"] = ["name"]
+		self.defReadAttrMap["read"]["person"] = ["position", "history"]
+		self.defReadAttrMap["view"]["movie"] = ["viewcount"]
+		self.defReadAttrMap["view"]["person"] = ["position"]
+
+		self.mightReadAttrMap["read"]["bank"] = ["account"]
+
+		self.mightWriteObject["view"]["movie"] = True
+		self.mightWriteObject["read"]["person"] = True
 
 	def setup(coordinators, my_index, config):
+		self.defReadAttrMap = collections.defaultdict(dict)
+		self.mightReadAttrMap = collections.defaultdict(dict)
+		self.mightWriteObject = collections.defaultdict(dict)
 		self.policy_file = config.get("setup", "policy_def_file")
 		self.mightWriteObj = 0
 		static_analysis()
@@ -57,6 +69,8 @@ class Client(process):
 		for i in request_list:
 			object1_id = int(config.get(i, "object1_id"))
 			object2_id = int(config.get(i, "object2_id"))
+			object1_type = config.get(i, "object1_type")
+			object2_type = config.get(i, "object2_type")
 			action = str(config.get(i, "action"))
 			
 			art_delay = 0
@@ -75,7 +89,7 @@ class Client(process):
 			uuid.update(str(time.time()).encode())
 			uuid.update(str(my_index).encode())
 
-			request = Request(object1_id, object2_id, action)
+			request = Request(object1_id, object2_id, action, object1_type, object2_type)
 			request.art_delay = art_delay
 			request.object2_delay = object2_delay
 
@@ -86,6 +100,25 @@ class Client(process):
 	def sendtask():
 
 		request = total_requests[current_request_index]
+		#print(self.defReadAttrMap[request.action][request.object1_type])
+		try:
+			request.defReadAttr.append(self.defReadAttrMap[request.action][request.object1_type])
+		except KeyError:
+			request.defReadAttr.append([])
+		try:
+			request.defReadAttr.append(self.defReadAttrMap[request.action][request.object2_type])
+		except KeyError:
+			request.defReadAttr.append([])
+
+		try:
+			request.mightReadAttr.append(self.mightReadAttrMap[request.action][request.object1_type])
+		except KeyError:
+			request.mightReadAttr.append([])
+		
+		try:
+			request.mightReadAttr.append(self.mightReadAttrMap[request.action][request.object2_type])
+		except KeyError:
+			request.mightReadAttr.append([])
 
 		request.client = self
 		
@@ -120,4 +153,5 @@ class Client(process):
 		current_request_index  = current_request_index + 1
 
 		if (num_requests > current_request_index):
+			print("ajshkajhdskja")
 			sendtask()

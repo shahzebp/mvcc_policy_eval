@@ -3,7 +3,7 @@ import logging.handlers
 import logging.config
 import hashlib
 import random
-
+import collections
 import time
 from time import sleep
 
@@ -12,12 +12,35 @@ from common import Request, Response
 class Client(process):
 
 	def static_analysis():
-		print("Performing static analysis:", self.policy_file)
-		self.mightWriteObj = 2
+		self.defReadAttrMap["read"]["bank"] = ["name"]
+		self.defReadAttrMap["read"]["person"] = ["position", "history"]
+		self.defReadAttrMap["view"]["movie"] = ["viewcount"]
+		self.defReadAttrMap["view"]["person"] = ["position"]
+
+		self.mightReadAttrMap["read"]["bank"] = ["account"]
+
+		self.mightWriteObject["view"]["movie"] = True
+		self.mightWriteObject["view"]["person"] = False
+		self.mightWriteObject["read"]["person"] = True
+		self.mightWriteObject["read"]["bank"] = False
+
+	'''
+	def populate_to_write_object(action, object_type[0], object_type[1]):
+		if(self.mightWriteObject[action][object_type[0]] == True and
+			self.mightWriteObject[action][object_type[1]] == True):
+				return 2
+		elif(self.mightWriteObject[action][object_type[0]] == False and
+			self.mightWriteObject[action][object_type[1]] == False):
+				return 0
+		else:
+			return 1
+	'''
 
 	def setup(coordinators, my_index, config):
+		self.defReadAttrMap = collections.defaultdict(dict)
+		self.mightReadAttrMap = collections.defaultdict(dict)
+		self.mightWriteObject = collections.defaultdict(dict)
 		self.policy_file = config.get("setup", "policy_def_file")
-		self.mightWriteObj = 0
 		static_analysis()
 
 		self.logger = logging.getLogger('sLogger')
@@ -57,6 +80,8 @@ class Client(process):
 		for i in request_list:
 			object1_id = int(config.get(i, "object1_id"))
 			object2_id = int(config.get(i, "object2_id"))
+			object1_type = config.get(i, "object1_type")
+			object2_type = config.get(i, "object2_type")
 			action = str(config.get(i, "action"))
 			
 			art_delay = 0
@@ -75,7 +100,7 @@ class Client(process):
 			uuid.update(str(time.time()).encode())
 			uuid.update(str(my_index).encode())
 
-			request = Request(object1_id, object2_id, action)
+			request = Request(object1_id, object2_id, action, object1_type, object2_type)
 			request.art_delay = art_delay
 			request.object2_delay = object2_delay
 
@@ -86,10 +111,26 @@ class Client(process):
 	def sendtask():
 
 		request = total_requests[current_request_index]
+		try:
+			request.defReadAttr[0] = (self.defReadAttrMap[request.action][request.object_type[0]])
+		except KeyError:
+			request.defReadAttr[0] = ([])
+		try:
+			request.defReadAttr[1] = (self.defReadAttrMap[request.action][request.object_type[1]])
+		except KeyError:
+			request.defReadAttr[1] = ([])
+
+		try:
+			request.mightReadAttr[0] = (self.mightReadAttrMap[request.action][request.object_type[0]])
+		except KeyError:
+			request.mightReadAttr[0] = ([])
+		
+		try:
+			request.mightReadAttr[1] = (self.mightReadAttrMap[request.action][request.object_type[1]])
+		except KeyError:
+			request.mightReadAttr[1] = ([])
 
 		request.client = self
-		
-		request.mightWriteObj = []
 
 		logger.info("[Client] Request sent (UUID: {0}) to object1 Coord"
 			.format(request.uuid))
@@ -98,19 +139,19 @@ class Client(process):
 
 		recv_sequence = recv_sequence + 1
 		
-		to_write_obj = len(request.mightWriteObj)
-
+		if(self.mightWriteObject[request.action][request.object_type[0]] == True and
+			self.mightWriteObject[request.action][request.object_type[1]] == False):
+			request.swapped = 1
 		
 		coordinator_id = 0
-		'''
-		if (to_write_obj == 0 or to_write_obj == 2):
-			coordinator_id = request.object1_id % len(coordinators)
+		
+		#to_write_obj = populate_to_write_object(request.action, request.object_type[0], request.object_type[1])
+
+		if (request.swapped == 0):
+			coordinator_id = request.object[0] % len(coordinators)
 		else:
-			if (request.object1_id == request.mightWriteObj):
-				coordinator_id = request.object2_id % len(coordinators)
-			else:
-				coordinator_id = request.object1_id % len(coordinators)
-		'''
+			coordinator_id = request.object[1] % len(coordinators)
+
 		send(('FROM_CLIENT', request),to=(coordinators[coordinator_id]))
 
 	def run():

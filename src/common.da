@@ -1,14 +1,18 @@
 class Version(object):
-    def __init__(self):
+    def __init__(self, attr, val):
+        self.attr = attr
+        self.val = val
         self.rts = 0
         self.wts = 0
-        self.pendingMightWrite = 0
+        self.pendingMightWrite = []
 
 class Request(object):
-    def __init__(self, object1_id, object2_id, action):
+    def __init__(self, object1_id, object2_id, action, object1_type, object2_type):
         self.uuid               = None
+
         self.object             = [None, None]
         self.action             = action
+        self.object_type        = [object1_type, object2_type]
         self.cached_updates     = [{}, {}]
         self.mightWriteObj      = []
         self.defReadAttr        = [[], []]
@@ -16,18 +20,20 @@ class Request(object):
         self.client             = None
         self.timestamp          = None
         self.art_delay          = 0
-        self.object2_delay          = 0
+        self.object2_delay      = 0
         self.read_only          = True
+
         self.object[0]          = object1_id
         self.object[1]          = object2_id
+
         self.swapped            = 0
 
     def __str__(self):
         return ("\nObject1 ID: {0} \
                 \nObject2 ID: {1} \
                 \nAction: {2} \
-                \nObject1 Cache: {3} \
-                \nObject2 Cache: {4} \
+                \nObject1 Type: {3} \
+                \nObject2 Type: {4} \
                 \nClient: {5} \
                 \nTimeStamp: {6} \
                 \nUUID: {7}     \
@@ -36,8 +42,12 @@ class Request(object):
                     self.object[0],
                     self.object[1],
                     self.action,
-                    self.cached_updates[0],
-                    self.cached_updates[1],
+                    self.object_type[0],
+                    self.object_type[1],
+                    #self.defReadAttr,
+                    #self.mightReadAttr,
+                    #self.cached_updates[0],
+                    #self.cached_updates[1],
                     self.client,
                     self.timestamp,
                     self.uuid))

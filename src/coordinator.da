@@ -2,6 +2,7 @@ import sys
 
 import queue
 import uuid
+import collections
 
 import logging
 import logging.handlers
@@ -14,7 +15,7 @@ from datetime import datetime
 import time
 
 from worker import Worker
-from common import Request, Response
+from common import Request, Response, Version
 
 class Coordinator(process):
 
@@ -52,7 +53,24 @@ class Coordinator(process):
         send(('EXIT',), to=(worker))
 
     def latestVersionBefore(id, attr, ts):
-        pass
+        version = None
+
+        if id not in main_cache:
+            main_cache[id] = {}
+
+        if attr not in main_cache[id]:
+            main_cache[id][attr] = []
+
+        if len(main_cache[id][attr]) > 0:
+            for v in reversed(main_cache[id][attr]):
+                if v.wts < ts:
+                    version = v
+                    break
+        else:
+            version = Version(attr, None)
+            main_cache[id][attr].append(version)
+
+        return version
 
     def cachedUpdates(id, request):
         pass
@@ -63,13 +81,12 @@ class Coordinator(process):
 
         request.timestamp   = time.time()
 
-        logger.info("[Coord 1] Sending request (UUID: {0}) to object2 Coord"
+        logger.info("[Coord 2] Sending request (UUID: {0}) to object2 Coord"
             .format(request.uuid))
         logger.debug("[Coord 2] Sending request (seq. {0}) to object2 Coord: {1}"
             .format(send_sequence, request))
 
         curr_object = request.swapped
-
 
         if (request.read_only):
             for attr in request.defReadAttr[curr_object]:
@@ -77,19 +94,19 @@ class Coordinator(process):
 
             for attr in request.mightReadAttr[curr_object]:
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
-                v.add((request.uuid, request.timestamp))
+                v.pendingMightWrite.append((request.uuid, request.timestamp))
 
         else:
             for attr in (request.defReadAttr[curr_object] + request.mightReadAttr[curr_object]):
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
-                v.add((request.uuid, request.timestamp))
+                v.pendingMightWrite.append((request.uuid, request.timestamp))
         
         request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], request)
 
         # send this to next coordinator
         send_sequence =  send_sequence + 1
         
-
+        
         # Need to send to appropriate coordinator
         coordinator_id = 0
 
@@ -136,12 +153,12 @@ class Coordinator(process):
 
             for attr in request.mightReadAttr[curr_object]:
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
-                v.add((request.uuid, request.timestamp))
+                v.pendingMightWrite.append((request.uuid, request.timestamp))
 
         else:
             for attr in (request.defReadAttr[curr_object] + request.mightReadAttr[curr_object]):
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
-                v.add((request.uuid, request.timestamp))
+                v.pendingMightWrite.append((request.uuid, request.timestamp))
 
         request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], request)
 

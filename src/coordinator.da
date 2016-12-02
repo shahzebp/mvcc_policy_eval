@@ -101,12 +101,12 @@ class Coordinator(process):
 
             for attr in request.mightReadAttr[curr_object]:
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
-                v.pendingMightWrite.append((request.uuid, request.timestamp))
+                v.pendingMightRead.append(request.uuid)
 
         else:
             for attr in (request.defReadAttr[curr_object] + request.mightReadAttr[curr_object]):
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
-                v.pendingMightWrite.append((request.uuid, request.timestamp))
+                v.pendingMightRead.append(request.uuid)
         
         request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], curr_object, request)
 
@@ -160,12 +160,12 @@ class Coordinator(process):
 
             for attr in request.mightReadAttr[curr_object]:
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
-                v.pendingMightWrite.append((request.uuid, request.timestamp))
+                v.pendingMightRead.append(request.uuid)
 
         else:
             for attr in (request.defReadAttr[curr_object] + request.mightReadAttr[curr_object]):
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
-                v.pendingMightWrite.append((request.uuid, request.timestamp))
+                v.pendingMightRead.append(request.uuid)
 
         request.cached_updates[curr_object] = cachedUpdates(request.object[curr_object], curr_object, request)
 
@@ -177,6 +177,25 @@ class Coordinator(process):
         send_sequence =  send_sequence + 1
         
         send(('FROM_COORD', request), to = (worker))
+
+
+    # object1 cooridinator receives response from the worker
+    # This response is the evaluation result for the request
+    # There exists a compostion of request inside response
+    def receive(msg=('FROM_WORKER_READATTR', response, i), from_=p):
+
+        logger.info("[Coord] Response received (UUID. {0}) from Worker"
+            .format(response.request.uuid))
+        logger.debug("[Coord] Response received (seq. {0}) from Worker: {1}"
+            .format(recv_sequence, response))
+        recv_sequence = recv_sequence + 1
+
+        for attr in response.request.mightReadAttr[i]:
+            v = latestVersionBefore(response.request.object[i], attr, response.request.timestamp)
+            v.pendingMightRead.remove(response.request.uuid)
+
+            if attr in response.readAttr[i]:
+                v.rts = response.request.timestamp
 
     # object1 cooridinator receives response from the worker
     # This response is the evaluation result for the request

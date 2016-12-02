@@ -4,7 +4,7 @@ class Version(object):
         self.val = val
         self.rts = 0
         self.wts = 0
-        self.pendingMightWrite = []
+        self.pendingMightRead = []
 
 class Request(object):
     def __init__(self, object1_id, object2_id, action, object1_type, object2_type):
@@ -56,6 +56,9 @@ class Response(object):
     def __init__(self, request, result):
         self.request            = request
         self.result             = result
+        self.updated_object        = -1
+
+        self.readAttr           =[[], []]
 
         self.object1_tent_attr_used = {}
         self.object2_tent_attr_used = {}

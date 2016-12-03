@@ -54,10 +54,10 @@ class Worker(process):
 
     def receive(msg=('FROM_COORD', request), from_ = p):
         
-        logger.info("[Worker] Receiving request (UUID: {0}) from object2 Coordinator"
-            .format(request.uuid))
-        logger.debug("[Worker] Receiving request (seq. {0}) from object2 Coordinator: {1}"
-            .format(recv_sequence, request))
+        logger.info("[Worker] Receiving request (UUID: {0}) from object{1} Coordinator"
+            .format(request.uuid, int(not request.swapped)))
+        logger.debug("[Worker] Receiving request (seq. {0}) from object{1} Coordinator: {2}"
+            .format(recv_sequence, int(not request.swapped), request))
 
         recv_sequence += 1
 

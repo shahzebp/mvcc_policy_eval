@@ -79,7 +79,8 @@ class Worker(process):
         recv_sequence += 1
         
         # If delay specified sleep for that while
-        #sleep(database_response.request.art_delay)
+        
+        sleep(database_response.request.art_delay)
 
         response = Response(database_response.request, True)
 

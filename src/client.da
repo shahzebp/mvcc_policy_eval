@@ -137,23 +137,23 @@ class Client(process):
 		coordinator_id = 0
 
 		if (request.swapped == 0):
-			logger.info("[Client] Request sent (UUID: {0}) to object {1} Coord"
-				.format(request.uuid, request.swapped))
-			logger.debug("[Client] Request sent (seq. {0}) to object {1} Coord {2}"
-				.format(send_sequence, request.swapped, request))
+			logger.info("[Client {2}] Request sent (UUID: {0}) to object {1} Coord"
+				.format(request.uuid, request.swapped, my_index))
+			logger.debug("[Client {3}] Request sent (seq. {0}) to object {1} Coord {2}"
+				.format(send_sequence, request.swapped, request, my_index))
 			coordinator_id = request.object[0] % len(coordinators)
 		else:
-			logger.info("[Client] Request sent (UUID: {0}) to object {1} Coord"
-				.format(request.uuid, request.swapped))
-			logger.debug("[Client] Request sent (seq. {0}) to object {1} Coord {2}"
-				.format(send_sequence, request.swapped, request))
+			logger.info("[Client {2}] Request sent (UUID: {0}) to object {1} Coord"
+				.format(request.uuid, request.swapped, my_index))
+			logger.debug("[Client {3}] Request sent (seq. {0}) to object {1} Coord {2}"
+				.format(send_sequence, request.swapped, request, my_index))
 			coordinator_id = request.object[1] % len(coordinators)
 
 		send(('FROM_CLIENT', request),to=(coordinators[coordinator_id]))
 
 	def run():
 
-		#sleep(my_index / 100.0)
+		sleep(my_index / 100.0)
 
 		sendtask()
 		

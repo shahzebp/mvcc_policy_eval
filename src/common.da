@@ -75,7 +75,7 @@ class Response(object):
 
     def __str__(self):
         return (self.request.__str__() + \
-                "\nresult: {0} \
+                "result: {0} \
                 \nupdated_object: {1} \
                 \nread_only_object: {2} \
                 \nreadAttr: {3} \

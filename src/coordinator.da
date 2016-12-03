@@ -142,9 +142,9 @@ class Coordinator(process):
     # Receive the request from object1 coordinator
     def receive(msg=('FROM_COORD_REQUEST', request), from_=p):
         
-        logger.info("[object{0} Coord] Request received (UUID: {1}) from object {2} Coord"
+        logger.info("[Coord {0}] Request received (UUID: {1}) from object {2} Coord"
             .format(int(not request.swapped), request.uuid, request.swapped))
-        logger.debug("[object{0} Coord] Request received (seq. {1}) from object {2} Coord {3}"
+        logger.debug("[Coord {0}] Request received (seq. {1}) from object {2} Coord {3}"
             .format(int(not request.swapped), recv_sequence, request.swapped, request))
 
         recv_sequence = recv_sequence + 1

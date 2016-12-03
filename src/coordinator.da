@@ -81,6 +81,10 @@ class Coordinator(process):
 
         return cachedResults
 
+    def restart(response):
+        coordinator_id = response.read_only_object % len(coordinators)    
+        send(('FROM_RESTART', response.request), to = (coordinators[coordinator_id]))
+
 
     # Initial process when request is received.
     # This is also the point of start for restart
@@ -139,6 +143,17 @@ class Coordinator(process):
         
         entrypoint(request)
     
+    def receive(msg=('FROM_RESTART', request), from_=p):
+        
+        logger.info("[Coord {0}] Request received (UUID: {1}) from Client"
+            .format(request.swapped, request.uuid))
+        logger.debug("[Coord {0}] Request received (seq. {1}) from Client: {2}"
+            .format(request.swapped, recv_sequence, request))
+        
+        recv_sequence = recv_sequence + 1
+        
+        entrypoint(request)
+
     # Receive the request from object1 coordinator
     def receive(msg=('FROM_COORD_REQUEST', request), from_=p):
         
@@ -197,18 +212,86 @@ class Coordinator(process):
             if attr in response.readAttr[i]:
                 v.rts = response.request.timestamp
 
+    def check_conflicts(response):
+        updated_object = response.updated_object
+
+        for key in response.updates:
+            v = latestVersionBefore(updated_object, key, response.request.timestamp)
+            if v.rts > response.request.timestamp:
+                return True
+
+        return False
+
+    def update_cache(response):
+        pass
+
+    def check_PMR_empty(response):
+        return True
+
+
     # object1 cooridinator receives response from the worker
     # This response is the evaluation result for the request
     # There exists a compostion of request inside response
     def receive(msg=('FROM_WORKER_RESPONSE', response), from_=p):
 
-        # Sending the message to the 1st corordinator in case this was a write request
-        if(response.request.read_only == False):
-            send(('OUTCOME', response), to = (response.request.client))
-        
+        #TODO check session id. if not equal then return
+
         logger.info("[object1 Coord] Response received (UUID. {0}) from Worker"
             .format(response.request.uuid))
         logger.debug("[object1 Coord] Response received (seq. {0}) from Worker: {1}"
             .format(recv_sequence, response))
         
         recv_sequence = recv_sequence + 1
+
+        conflict = check_conflicts(response)
+
+        if conflict == False:
+            if response.updated_object not in PCA:
+                PCA[response.updated_object] = {}
+
+            for key in response.updates:
+                if key not in PCA[response.updated_object]:
+                    PCA[response.updated_object][key] = []
+
+                PCA[response.updated_object][key].append(response.request.uuid)
+
+            await(check_PMR_empty(response) == True)
+
+            i_conflict = check_conflicts(response)
+
+            if i_conflict == False:
+                # TODO send updates to DB
+
+                update_cache(response)
+
+                updated_object_index = 0
+                if (response.request.object[1] == response.updated_object):
+                    updated_object_index = 1
+
+
+                attr_list = (response.request.defReadAttr[updated_object_index] +
+                            response.request.mightReadAttr[updated_object_index])
+
+                for attr in attr_list:
+                    v = latestVersionBefore(response.updated_object, attr, response.request.timestamp)
+                    v.pendingMightRead.remove(response.uuid)
+
+                    if attr in response.readAttr:
+                        v.rts = response.request.timestamp
+
+                send(('OUTCOME', response), to = (response.request.client))
+                
+                coordinator_id = response.read_only_object % len(coordinators)    
+                send(('FROM_WORKER_READATTR', response, 0), to = (coordinators[coordinator_id]))
+
+                for key in response.updates:
+                    PCA[response.updated_object][key].remove(response.request.uuid)
+            else:
+                for key in response.updates:
+                    PCA[response.updated_object][key].remove(response.request.uuid)
+
+                restart(response)
+        else:
+            restart(response)
+
+

@@ -57,6 +57,7 @@ class Response(object):
         self.request            = request
         self.result             = result
         self.updated_object        = -1
+        self.read_only_object      = -1
 
         self.readAttr           =[[], []]
 

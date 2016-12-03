@@ -247,7 +247,7 @@ class Coordinator(process):
 
         for key in response.updates:
             v = latestVersionBefore(updated_object, key, response.request.timestamp)
-            if not v.pendingMightRead.empty:
+            if not v.pendingMightRead:
                 return False
 
         return True

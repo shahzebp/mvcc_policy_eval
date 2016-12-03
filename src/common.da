@@ -71,40 +71,24 @@ class Request(object):
 class Response(object):
     def __init__(self, request, result):
         self.request            = request
-        self.result             = result
+        self.result             = False
         self.updated_object     = -1
         self.read_only_object   = -1
 
         self.readAttr           = [[], []]
         self.updates            = {}
 
-        self.object1_tent_attr_used = {}
-        self.object2_tent_attr_used = {}
-
-        self.object1_db_attr_used   = {}
-        self.object2_db_attr_used   = {}
-
-        self.object1_to_update      = {}
-        self.object2_to_update      = {}
-
     def __str__(self):
         return (self.request.__str__() + \
-                "object1 attribs used from Cache: {0} \
-                \nobject2 attribs used from Cache: {1} \
-                \nobject1 attribs used from DB: {2} \
-                \nobject2 attribs used from DB: {3} \
-                \nobject1 attribs to Update: {4} \
-                \nobject2 attrubs to Update: {5} \
-                \nResult: {6} \
-                \n"
+                "\nResult: {0} \
+                 \nUpdated_Object: {1} \
+                 \nRead_Only Object {2} \
+                 \nUpdates {3}"
                 .format(
-                    self.object1_tent_attr_used,
-                    self.object2_tent_attr_used,
-                    self.object1_db_attr_used,
-                    self.object2_db_attr_used,
-                    self.object1_to_update,
-                    self.object2_to_update,
-                    self.result))
+                    self.result,
+                    self.updated_object,
+                    self.read_only_object,
+                    self.updates))
 
 class DataBaseResponse(object):
     def __init__(self, request):

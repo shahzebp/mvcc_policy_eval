@@ -37,6 +37,14 @@ class Database(process):
         logger.info("[Database Emulator] Dumping database contents to log file\n{0}"
             .format(pp.pformat(self.database)))
     
+    def latestVersionFromDatabase(object_id, attribute, timestamp):
+        l = self.database[object_id][attribute]
+        index = 0
+        for index, value in enumerate(l):
+            if value[1] > timestamp:
+                return l[index - 1][0]
+        return l[index][0]
+
     def receive(msg=('FROM_WORKER', request), from_ = p):
         value = {}
         logger.info("[Database Emulator] Receiving request (UUID: {0}) from Worker"
@@ -44,50 +52,45 @@ class Database(process):
         logger.debug("[Database Emulator] Receiving request (seq. {0}) from Worker: {1}"
             .format(recv_sequence, request))
         recv_sequence += 1
-        
         db_response = DataBaseResponse(request)
-        db_response_ob1_attribute_map = {}
 
         """
         Retrieving the attributes keys from the database
         For both object1 and object2
         """
+
         try:
-            ob1_database_attribute_keys = set(self.database[str(request.object1_id)].keys())
+
+            ob1_database_attribute_keys = self.database[str(request.object[0])].keys()
 
             """
             Finding the diff of the attributes which are present
-            in the database and in the tentative update map in the request
+            in the database and in the cached_updates map in the request
             for the object1
             """
-            ob1_attribute_diff = set(ob1_database_attribute_keys - set(request.cached_updates[1].keys()))
-
+            ob1_attribute_diff = set(ob1_database_attribute_keys - set(request.cached_updates[0].keys()))
             for attr in ob1_attribute_diff:
-                db_response_ob1_attribute_map[attr] = self.database[str(request.object1_id)][attr]
+                db_response.database_attributes[0][attr] = latestVersionFromDatabase(str(request.object[0]), attr, request.timestamp)
         except:
-            db_response.result = False
-
-        db_response_ob2_attribute_map = {}
+            db_response.database_attributes[0][attr] = None
 
         try:
-            ob2_database_attribute_keys = set(self.database[str(request.object2_id)].keys())
+
+            ob2_database_attribute_keys = self.database[str(request.object[1])].keys()
+
             """
             Finding the diff of the attributes which are present
-            in the database and in the tentative update map in the request
-            for the object2
+            in the database and in the cached_updates map in the request
+            for the object1
             """
-
             ob2_attribute_diff = set(ob2_database_attribute_keys - set(request.cached_updates[1].keys()))
-
             for attr in ob2_attribute_diff:
-                db_response_ob2_attribute_map[attr] = self.database[str(request.object2_id)][attr]
+                db_response.database_attributes[1][attr] = latestVersionFromDatabase(str(request.object[1]), attr, request.timestamp)
         except:
-            db_response.result = False
+            db_response.database_attributes[1][attr] = None
 
         #Populating the object1 and object2 attributes maps which have been
         #calculated earlier in this function
-        db_response.database_attributes[0] = db_response_ob1_attribute_map
-        db_response.database_attributes[1] = db_response_ob2_attribute_map
         logger.info("[Database Emulator] Sending database response (UUID: {0}) to Worker"
             .format(db_response.request.uuid))
         logger.debug("[Database Emulator] Sending database response (seq. {0}) to Worker: {1}"

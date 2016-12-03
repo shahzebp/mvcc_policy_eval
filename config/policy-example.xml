@@ -2,40 +2,40 @@
 <policy>
 
   <rule name="access bank A first time">
-    <object1Condition type="person" position="employee" history=""></object1Condition>
-    <object2Condition type="bank" name="bank A"></object2Condition>
+    <object1Condition position="employee" history=""></object1Condition>
+    <object2Condition name="bank A"></object2Condition>
     <action name="read"></action>
     <object1Update history="$object2.name"></object1Update>
   </rule>
 
   <rule name="access bank A again">
-    <object1Condition type="person" position="employee" history="bank A"></object1Condition>
-    <object2Condition type="bank" name="bank A"></object2Condition>
+    <object1Condition position="employee" history="bank A"></object1Condition>
+    <object2Condition name="bank A"></object2Condition>
     <action name="read"></action>
   </rule>
 
   <rule name="update bank A again">
-    <object1Condition type="person" position="manager" history="bank A"></object1Condition>
-    <object2Condition type="bank" name="bank A"></object2Condition>
+    <object1Condition position="manager" history="bank A"></object1Condition>
+    <object2Condition name="bank A"></object2Condition>
     <action name="update"></action>
   </rule>
 
   <rule name="access bank B first time">
-    <object1Condition type="person" position="employee" history=""></object1Condition>
-    <object2Condition type="bank" name="bank B" account="checkings"></object2Condition>
+    <object1Condition position="employee" history=""></object1Condition>
+    <object2Condition name="bank B" account="checkings"></object2Condition>
     <action name="read"></action>
     <object1Update history="bank B"></object1Update>
   </rule>
 
   <rule name="access bank B again">
-    <object1Condition type="person" position="employee" history="bank B"></object1Condition>
-    <object2Condition type="bank" name="bank B"></object2Condition>
+    <object1Condition position="employee" history="bank B"></object1Condition>
+    <object2Condition name="bank B"></object2Condition>
     <action name="read"></action>
   </rule>
 
   <rule name="customers collectively can view each movie at most 5 times">
-    <object1Condition type="person" position="customer"></object1Condition>
-    <object2Condition type="movie" viewCount="&lt;5"></object2Condition>
+    <object1Condition position="customer"></object1Condition>
+    <object2Condition viewCount="&lt;5"></object2Condition>
     <action name="view"></action>
     <object2Update viewCount="++"></object2Update>
   </rule>

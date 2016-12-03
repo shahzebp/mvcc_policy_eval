@@ -52,6 +52,37 @@ class Worker(process):
         await(received(('EXIT',)))
         #logger.info("Exiting the Workers")
 
+    def evaluate(value,
+                object1_attribute_list_to_evaluate_policy,
+                object2_attribute_list_to_evaluate_policy):
+        dependency = value[1:].split('.')[0]
+        attr_name = value[1:].split('.')[1]
+        if dependency == "object1":
+            return object1_attribute_list_to_evaluate_policy[attr_name]
+        else:
+            return object2_attribute_list_to_evaluate_policy[attr_name]
+
+    def does_attribute_value_satisfy_condition(value_in_policy, value_from_db):
+        if(len(value_in_policy) == 0 and len(value_from_db) == 0):
+            return True
+        if(len(value_in_policy) == 0 and len(value_from_db) != 0):
+            return False
+        if value_in_policy[0] == '>' or value_in_policy[0] == "<":
+            ops = { ">": operator.gt, "<": operator.lt}
+            integer_value_in_policy = int(value_in_policy[1:])
+            try:
+                integer_value_from_db = int(value_from_db)
+                if ops[value_in_policy[0]](integer_value_from_db, integer_value_in_policy):
+                    return True
+                else:
+                    return False
+            except:
+                return False
+        if value_in_policy != value_from_db:
+            return False
+        else:
+            return True
+
     def receive(msg=('FROM_COORD', request), from_ = p):
         
         logger.info("[Worker] Receiving request (UUID: {0}) from Coordinator {1}"
@@ -69,6 +100,50 @@ class Worker(process):
 
         send(('FROM_WORKER', request), to = (database))
 
+    def validate_attributes_in_policy(rule_map,
+                            attributes_list_to_evaluate_policy,
+                            object1_attribute_list_to_evaluate_policy,
+                            object2_attribute_list_to_evaluate_policy):
+        count = 0
+        key_size = len(rule_map.keys())
+        for key in rule_map.keys():
+            if key in attributes_list_to_evaluate_policy:
+                if rule_map[key] != None and len(rule_map[key]) > 0 and rule_map[key][0] == '$':
+                    rule_map[key] = evaluate(rule_map[key],
+                                    attributes_list_to_evaluate_policy,
+                                    object1_attribute_list_to_evaluate_policy,
+                                    object2_attribute_list_to_evaluate_policy)
+                if does_attribute_value_satisfy_condition(rule_map[key], attributes_list_to_evaluate_policy[key]):
+                    count+=1
+                else:
+                    break
+            else:
+                break
+        if count != key_size:
+            return False
+        else:
+            return True
+
+    def update_attributes_after_policy_evaluation(update_condition,
+                                attribute_list_to_evaluate_policy,
+                                object1_attribute_list_to_evaluate_policy,
+                                object2_attribute_list_to_evaluate_policy):
+        to_update = {}
+        if update_condition:
+            for key, value in update_condition.items():
+                if value == "++":
+                    to_update[key] = str(int(attribute_list_to_evaluate_policy[key]) + 1)
+                elif value == "--":
+                    to_update[key] = str(int(attribute_list_to_evaluate_policy[key]) - 1)
+                elif value != None and len(value) > 0 and value[0] == '$':
+                    to_update[key] = evaluate(update_condition[key],
+                                        object1_attribute_list_to_evaluate_policy,
+                                        object2_attribute_list_to_evaluate_policy)
+
+                else:
+                    to_update[key] = update_condition[key]
+        return to_update
+
     def receive(msg=('FROM_DATABASE', database_response), from_ = p):
 
         logger.info("[Worker] Receiving response (UUID: {0}) from Database Emulator"
@@ -78,13 +153,66 @@ class Worker(process):
         
         recv_sequence += 1
         
+        """
+        Getting the list of rules which belong to this object
+        from our policy map object
+        """
+
+        rules_list = {}
+        try:
+            rules_list = self.policy_map[database_response.request.action]
+        except KeyError:
+            response = Response(database_response.request, False)
+            rid = database_response.request.subject_id % len(coordinators)
+            logger.info("[Worker] No Rule Found for Action [{0}] while evaluating Request (UUID: {1})"
+                .format(database_response.request.action, database_response.request.uuid))
+            send(('FROM_WORKER',response), to = (coordinators[rid]))
+            return
+
+        response = Response(database_response.request, False)
+        object1_atrribute_value_map = database_response.request.cached_updates[0].copy()
+        object1_atrribute_value_map.update(database_response.database_attributes[0])
+
+        object2_atrribute_value_map = database_response.request.cached_updates[1].copy()
+        object2_atrribute_value_map.update(database_response.database_attributes[1])
+
+        for rule in rules_list:
+            result = validate_attributes_in_policy(rule.object1_condition,
+                                object1_atrribute_value_map,
+                                object1_atrribute_value_map,
+                                object2_atrribute_value_map)
+            if result == True:
+                result = validate_attributes_in_policy(rule.object2_condition,
+                                object2_atrribute_value_map,
+                                object1_atrribute_value_map,
+                                object2_atrribute_value_map)
+                if result == True:
+                    """
+                    This rule has been satisfied
+                    """
+                    response.result = True
+                    if rule.object1_update != None:
+                        response.updated_object = database_response.request.object[0]
+                        response.read_only_object = database_response.request.object[1]
+                        response.updates = update_attributes_after_policy_evaluation(rule.object1_update,
+                                        object1_atrribute_value_map,
+                                        object1_atrribute_value_map,
+                                        object2_atrribute_value_map)
+                    elif rule.object2_update != None:
+                        print("Second")
+                        response.updated_object = database_response.request.object[1]
+                        response.read_only_object = database_response.request.object[0]
+                        response.updates = update_attributes_after_policy_evaluation(rule.object2_update,
+                                        object2_atrribute_value_map,
+                                        object1_atrribute_value_map,
+                                        object2_atrribute_value_map)
+
+        print(response)
         # If delay specified sleep for that while
         #sleep(database_response.request.art_delay)
 
-        response = Response(database_response.request, True)
-
         ## TODO dummy to updated object. Correct it properly
-        response.updated_object = response.request.object[0]
+
 
         coordinator_id = 0
 

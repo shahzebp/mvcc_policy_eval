@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from common import DataBaseResponse
 import threading, time
 import pprint
+import collections
 
 class Database(process):
     def setup(config):
@@ -26,7 +27,8 @@ class Database(process):
             innerdict = {}
             for attribute in child:
                 for k,v in attribute.attrib.items():
-                    innerdict[k] = v
+                    if k != "type":
+                        innerdict[k] = [(v,0)]
                 for k,v in child.attrib.items():
                     self.database[v] = innerdict
 
@@ -34,7 +36,6 @@ class Database(process):
         pp = pprint.PrettyPrinter(indent=4)
         logger.info("[Database Emulator] Dumping database contents to log file\n{0}"
             .format(pp.pformat(self.database)))
-        
     
     def receive(msg=('FROM_WORKER', request), from_ = p):
         value = {}
@@ -98,6 +99,9 @@ class Database(process):
     """"
     This function finally commits the changes to the database.
     """
+
+    def update_database(object_id, attribute_name, attribute_value, timestamp):
+        self.database[object_id][attribute_name].append((attribute_value, timestamp))
 
     def commit_to_db(attributes_to_update):
         logger.debug("[Database Emulator] Commiting changes to database %s", attributes_to_update)

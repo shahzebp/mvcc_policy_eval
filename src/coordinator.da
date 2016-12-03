@@ -199,10 +199,10 @@ class Coordinator(process):
     # There exists a compostion of request inside response
     def receive(msg=('FROM_WORKER_READATTR', response, i), from_=p):
 
-        logger.info("[Coord] Response received (UUID. {0}) from Worker"
-            .format(response.request.uuid))
-        logger.debug("[Coord] Response received (seq. {0}) from Worker: {1}"
-            .format(recv_sequence, response))
+        logger.info("[Coord] Response received (UUID. {0}) from {1}"
+            .format(response.request.uuid, p))
+        logger.debug("[Coord] Response received (seq. {0}) from {1}: {2}"
+            .format(recv_sequence, p, response))
         recv_sequence = recv_sequence + 1
 
         for attr in response.request.mightReadAttr[i]:
@@ -254,9 +254,9 @@ class Coordinator(process):
 
         #TODO check session id. if not equal then return
 
-        logger.info("[object1 Coord] Response received (UUID. {0}) from Worker"
+        logger.info("[Coord] Response received (UUID. {0}) from Worker"
             .format(response.request.uuid))
-        logger.debug("[object1 Coord] Response received (seq. {0}) from Worker: {1}"
+        logger.debug("[Coord] Response received (seq. {0}) from Worker: {1}"
             .format(recv_sequence, response))
         
         recv_sequence = recv_sequence + 1

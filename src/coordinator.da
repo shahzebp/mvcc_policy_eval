@@ -38,10 +38,14 @@ class Coordinator(process):
         
         # Each coordinator intantiates its own workers
         # It is one as of now
+        
+        self.worker_index   = 0
+        num_worker = int(config.get("setup", "num_worker_per_coord"))
 
-        self.worker     = new(Worker, num = 1)
-        setup(self.worker, (coordinators, database, config))
-        start(worker)
+        workers_set     = new(Worker, num = num_worker)
+        self.workers    = list(workers_set)
+        setup(self.workers, (coordinators, database, config))
+        start(workers)
 
     def run():
 
@@ -50,7 +54,7 @@ class Coordinator(process):
             
         logger.info("Exiting the Coordinators")
         # Issue await to the clients
-        send(('EXIT',), to=(worker))
+        send(('EXIT',), to=(workers))
 
     def latestVersionBefore(id, attr, ts):
         version = None
@@ -195,9 +199,13 @@ class Coordinator(process):
             .format(int(not request.swapped), send_sequence, request))
 
         send_sequence =  send_sequence + 1
-        
-        send(('FROM_COORD', request), to = (worker))
 
+        send(('FROM_COORD', request), to = (workers[worker_index]))
+
+        # Round robin worker usage for fair share distribution
+        worker_index = worker_index + 1
+        if worker_index == len(workers):
+            worker_index = 0
 
     # object1 cooridinator receives response from the worker
     # This response is the evaluation result for the request
@@ -241,7 +249,6 @@ class Coordinator(process):
 
             main_cache[updated_object][key].append(version)
 
-        
     def check_PMR_empty(response):
         updated_object = response.updated_object
 
@@ -283,8 +290,10 @@ class Coordinator(process):
             i_conflict = check_conflicts(response)
 
             if i_conflict == False:
-                # TODO send updates to DB
-
+                
+                send(('FROM_COORDINATOR_ATTR_UPDATE', response.updated_object,
+                    response.updates, response.request.timestamp), to = (database))
+                
                 update_cache(response)
 
                 updated_object_index = 0
@@ -301,7 +310,8 @@ class Coordinator(process):
 
                     if attr in response.readAttr[updated_object_index]:
                         v.rts = response.request.timestamp
-
+                        print(v.rts)
+                        
                 send(('OUTCOME', response), to = (response.request.client))
                 
                 coordinator_id = response.read_only_object % len(coordinators)    

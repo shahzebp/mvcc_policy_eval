@@ -24,7 +24,7 @@ class Client(process):
 		self.mightWriteObject["read"]["person"] = True
 		self.mightWriteObject["read"]["bank"] = False
 
-	def setup(coordinators, my_index, config):
+	def setup(coordinators, my_index, config, database):
 		self.defReadAttrMap = collections.defaultdict(dict)
 		self.mightReadAttrMap = collections.defaultdict(dict)
 		self.mightWriteObject = collections.defaultdict(dict)
@@ -60,6 +60,7 @@ class Client(process):
 		self.total_requests = []
 
 		self.num_requests = len(request_list)
+
 		self.current_request_index = 0
 
 		self.send_sequence = 1
@@ -99,6 +100,7 @@ class Client(process):
 	def sendtask():
 
 		request = total_requests[current_request_index]
+
 		try:
 			request.defReadAttr[0] = (self.defReadAttrMap[request.action][request.object_type[0]])
 		except KeyError:
@@ -135,27 +137,27 @@ class Client(process):
 		coordinator_id = 0
 
 		if (request.swapped == 0):
-			logger.info("[Client] Request sent (UUID: {0}) to object {1} Coord"
-				.format(request.uuid, request.swapped))
-			logger.debug("[Client] Request sent (seq. {0}) to object {1} Coord {2}"
-				.format(send_sequence, request.swapped, request))
+			logger.info("[Client {2}] Request sent (UUID: {0}) to object {1} Coord"
+				.format(request.uuid, request.swapped, my_index))
+			logger.debug("[Client {3}] Request sent (seq. {0}) to object {1} Coord {2}"
+				.format(send_sequence, request.swapped, request, my_index))
 			coordinator_id = request.object[0] % len(coordinators)
 		else:
-			logger.info("[Client] Request sent (UUID: {0}) to object {1} Coord"
-				.format(request.uuid, request.swapped))
-			logger.debug("[Client] Request sent (seq. {0}) to object {1} Coord {2}"
-				.format(send_sequence, request.swapped, request))
+			logger.info("[Client {2}] Request sent (UUID: {0}) to object {1} Coord"
+				.format(request.uuid, request.swapped, my_index))
+			logger.debug("[Client {3}] Request sent (seq. {0}) to object {1} Coord {2}"
+				.format(send_sequence, request.swapped, request, my_index))
 			coordinator_id = request.object[1] % len(coordinators)
 
 		send(('FROM_CLIENT', request),to=(coordinators[coordinator_id]))
 
 	def run():
 
-		#sleep(my_index / 100.0)
+		sleep(my_index / 100.0)
 
 		sendtask()
 		
-		await(num_requests == current_request_index)
+		await(received(('EXIT',)))
 
 	def receive(msg=('OUTCOME', response), from_ = p):
 		
@@ -168,5 +170,10 @@ class Client(process):
 		
 		current_request_index  = current_request_index + 1
 
+		send(('DUMP_DATABASE',),to=(database))
+
 		if (num_requests > current_request_index):
 			sendtask()
+
+		elif (num_requests == current_request_index): 
+			send(('EXIT',), to=(self))

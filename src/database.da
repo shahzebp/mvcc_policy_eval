@@ -103,8 +103,8 @@ class Database(process):
     This function finally commits the changes to the database.
     """
 
-    def update_database(object_id, attribute_name, attribute_value, timestamp):
-        self.database[object_id][attribute_name].append((attribute_value, timestamp))
+    #def update_database(object_id, attribute_name, attribute_value, timestamp):
+    #    self.database[object_id][attribute_name].append((attribute_value, timestamp))
 
     def commit_to_db(attributes_to_update):
         logger.debug("[Database Emulator] Commiting changes to database %s", attributes_to_update)
@@ -118,8 +118,20 @@ class Database(process):
     to commit the update values to the database
     """
 
-    def receive(msg=('FROM_COORDINATOR_ATTR_UPDATE', attributes_to_update)):
-        logger.debug("[Database Emulator] Receiving updates {0} from coordinator to commit to db".
-                    format(attributes_to_update))
+    def receive(msg=('FROM_COORDINATOR_ATTR_UPDATE', 
+        object_id, updates, ts)):
+        
+        logger.debug("[Database Emulator] Receiving updates for {0} from coordinator to commit to db\n"
+                    .format(object_id, updates))
 
-        threading.Timer(randvalue, commit_to_db, [attributes_to_update]).start()
+        for key, val in updates.items():
+            self.database[object_id][key].append((val, ts))
+
+        #threading.Timer(randvalue, commit_to_db, [attributes_to_update]).start()
+
+    def receive(msg=('DUMP_DATABASE', )):
+        pp = pprint.PrettyPrinter(indent=4)
+        logger.info("[Database Emulator] Dumping database contents to log file\n{0}"
+            .format(pp.pformat(self.database)))
+
+    

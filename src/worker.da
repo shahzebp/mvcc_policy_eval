@@ -209,7 +209,8 @@ class Worker(process):
 
         print(response)
         # If delay specified sleep for that while
-        #sleep(database_response.request.art_delay)
+        
+        sleep(database_response.request.art_delay)
 
         ## TODO dummy to updated object. Correct it properly
 

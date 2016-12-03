@@ -5,6 +5,22 @@ class Version(object):
         self.rts = 0
         self.wts = wts
         self.pendingMightRead = []
+    
+    def __str__(self):
+        return ("\nattr: {0} \
+                \nval: {1} \
+                \nrts: {2} \
+                \nwts: {3} \
+                \npendingMightRead: {4} \
+                \n"
+                .format(
+                    self.attr,
+                    self.val,
+                    self.rts,
+                    self.wts,
+                    self.pendingMightRead
+                    ))
+
 
 class Request(object):
     def __init__(self, object1_id, object2_id, action, object1_type, object2_type):
@@ -13,7 +29,7 @@ class Request(object):
         self.object             = [None, None]
         self.action             = action
         self.object_type        = [object1_type, object2_type]
-        self.cached_updates     = [{}, {}]
+        self.cached_updates     = [[], []]
         self.mightWriteObj      = []
         self.defReadAttr        = [[], []]
         self.mightReadAttr      = [[], []]
@@ -21,7 +37,7 @@ class Request(object):
         self.timestamp          = None
         self.art_delay          = 0
         self.object2_delay      = 0
-        self.read_only          = True
+        self.read_only          = False
 
         self.object[0]          = object1_id
         self.object[1]          = object2_id
@@ -60,6 +76,7 @@ class Response(object):
         self.read_only_object   = -1
 
         self.readAttr           = [[], []]
+        self.updates            = {}
 
         self.object1_tent_attr_used = {}
         self.object2_tent_attr_used = {}

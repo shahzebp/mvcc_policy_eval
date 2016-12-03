@@ -54,9 +54,9 @@ class Worker(process):
 
     def receive(msg=('FROM_COORD', request), from_ = p):
         
-        logger.info("[Worker] Receiving request (UUID: {0}) from object{1} Coordinator"
+        logger.info("[Worker] Receiving request (UUID: {0}) from Coordinator {1}"
             .format(request.uuid, int(not request.swapped)))
-        logger.debug("[Worker] Receiving request (seq. {0}) from object{1} Coordinator: {2}"
+        logger.debug("[Worker] Receiving request (seq. {0}) from Coordinator {1}: {2}"
             .format(recv_sequence, int(not request.swapped), request))
 
         recv_sequence += 1
@@ -84,6 +84,7 @@ class Worker(process):
         response = Response(database_response.request, True)
 
         ## TODO dummy to updated object. Correct it properly
+        response.updated_object = response.request.object[0]
 
         coordinator_id = 0
 

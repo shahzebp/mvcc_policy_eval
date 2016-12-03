@@ -125,6 +125,13 @@ class Client(process):
 			self.mightWriteObject[request.action][request.object_type[1]] == False):
 			request.swapped = 1
 		
+		if(self.mightWriteObject[request.action][request.object_type[0]] == False and
+			self.mightWriteObject[request.action][request.object_type[1]] == False):
+			request.read_only = True
+		else:
+			request.read_only = False
+
+
 		coordinator_id = 0
 
 		if (request.swapped == 0):

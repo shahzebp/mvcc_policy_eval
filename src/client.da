@@ -24,10 +24,14 @@ class Client(process):
 		self.mightWriteObject["read"]["person"] = True
 		self.mightWriteObject["read"]["bank"] = False
 
+		self.mightWriteAttrMap["read"]["person"] = ["history"]
+		self.mightWriteAttrMap["view"]["movie"] = ["viewcount"]
+
 	def setup(coordinators, my_index, config, database):
 		self.defReadAttrMap = collections.defaultdict(dict)
 		self.mightReadAttrMap = collections.defaultdict(dict)
 		self.mightWriteObject = collections.defaultdict(dict)
+		self.mightWriteAttrMap = collections.defaultdict(dict)
 		self.policy_file = config.get("setup", "policy_def_file")
 		static_analysis()
 
@@ -120,9 +124,19 @@ class Client(process):
 		except KeyError:
 			request.mightReadAttr[1] = ([])
 
+		try:
+			request.mightWriteAttr[0] = (self.mightWriteAttrMap[request.action][request.object_type[0]])
+		except KeyError:
+			request.mightWriteAttr[0] = ([])
+
+		try:
+			request.mightWriteAttr[1] = (self.mightWriteAttrMap[request.action][request.object_type[1]])
+		except KeyError:
+			request.mightWriteAttr[1] = ([])
+
 		request.client = self
 		recv_sequence = recv_sequence + 1
-		
+
 		if(self.mightWriteObject[request.action][request.object_type[0]] == True and
 			self.mightWriteObject[request.action][request.object_type[1]] == False):
 			request.swapped = 1

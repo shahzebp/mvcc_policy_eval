@@ -33,6 +33,7 @@ class Request(object):
         self.mightWriteObj      = []
         self.defReadAttr        = [[], []]
         self.mightReadAttr      = [[], []]
+        self.mightWriteAttr     = [[], []]
         self.client             = None
         self.timestamp          = None
         self.art_delay          = 0
@@ -49,8 +50,9 @@ class Request(object):
                 \nTimeStamp: {4} \
                 \ndefReadAttr: {5} \
                 \nmightReadAttr: {6} \
-                \ncached_updates: {7} \
-                \nUUID: {8}     \
+                \nmightWriteAttr: {7} \
+                \ncached_updates: {8} \
+                \nUUID: {9}     \
                 \n"
                 .format(
                     self.object,
@@ -60,6 +62,7 @@ class Request(object):
                     self.timestamp,
                     self.defReadAttr,
                     self.mightReadAttr,
+                    self.mightWriteAttr,
                     self.cached_updates,
                     self.uuid))
 

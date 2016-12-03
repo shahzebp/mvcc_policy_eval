@@ -26,7 +26,7 @@ class Request(object):
     def __init__(self, object1_id, object2_id, action, object1_type, object2_type):
         self.uuid               = None
 
-        self.object             = [None, None]
+        self.object             = [object1_id, object2_id]
         self.action             = action
         self.object_type        = [object1_type, object2_type]
         self.cached_updates     = [{}, {}]
@@ -39,33 +39,28 @@ class Request(object):
         self.object2_delay      = 0
         self.read_only          = False
 
-        self.object[0]          = object1_id
-        self.object[1]          = object2_id
-
         self.swapped            = 0
 
     def __str__(self):
-        return ("\nObject1 ID: {0} \
-                \nObject2 ID: {1} \
-                \nAction: {2} \
-                \nObject1 Type: {3} \
-                \nObject2 Type: {4} \
-                \nClient: {5} \
-                \nTimeStamp: {6} \
-                \nUUID: {7}     \
+        return ("\nObjects: {0} \
+                \nAction: {1} \
+                \nObject_type: {2} \
+                \nClient: {3} \
+                \nTimeStamp: {4} \
+                \ndefReadAttr: {5} \
+                \nmightReadAttr: {6} \
+                \ncached_updates: {7} \
+                \nUUID: {8}     \
                 \n"
                 .format(
-                    self.object[0],
-                    self.object[1],
+                    self.object,
                     self.action,
-                    self.object_type[0],
-                    self.object_type[1],
-                    #self.defReadAttr,
-                    #self.mightReadAttr,
-                    #self.cached_updates[0],
-                    #self.cached_updates[1],
+                    self.object_type,
                     self.client,
                     self.timestamp,
+                    self.defReadAttr,
+                    self.mightReadAttr,
+                    self.cached_updates,
                     self.uuid))
 
 class Response(object):
@@ -78,33 +73,20 @@ class Response(object):
         self.readAttr           = [[], []]
         self.updates            = {}
 
-        self.object1_tent_attr_used = {}
-        self.object2_tent_attr_used = {}
-
-        self.object1_db_attr_used   = {}
-        self.object2_db_attr_used   = {}
-
-        self.object1_to_update      = {}
-        self.object2_to_update      = {}
-
     def __str__(self):
         return (self.request.__str__() + \
-                "object1 attribs used from Cache: {0} \
-                \nobject2 attribs used from Cache: {1} \
-                \nobject1 attribs used from DB: {2} \
-                \nobject2 attribs used from DB: {3} \
-                \nobject1 attribs to Update: {4} \
-                \nobject2 attrubs to Update: {5} \
-                \nResult: {6} \
+                "\nresult: {0} \
+                \nupdated_object: {1} \
+                \nread_only_object: {2} \
+                \nreadAttr: {3} \
+                \nupdates: {4} \
                 \n"
                 .format(
-                    self.object1_tent_attr_used,
-                    self.object2_tent_attr_used,
-                    self.object1_db_attr_used,
-                    self.object2_db_attr_used,
-                    self.object1_to_update,
-                    self.object2_to_update,
-                    self.result))
+                    self.result,
+                    self.updated_object,
+                    self.read_only_object,
+                    self.readAttr,
+                    self.updates))
 
 class DataBaseResponse(object):
     def __init__(self, request):

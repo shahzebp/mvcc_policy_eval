@@ -190,6 +190,8 @@ class Worker(process):
                     """
                     This rule has been satisfied
                     """
+                    response.readAttr[0] = list(rule.object1_condition.keys())
+                    response.readAttr[1] = list(rule.object2_condition.keys())
                     response.result = True
                     if rule.object1_update != None:
                         response.updated_object = database_response.request.object[0]

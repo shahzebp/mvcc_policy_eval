@@ -241,7 +241,6 @@ class Coordinator(process):
 
             main_cache[updated_object][key].append(version)
 
-        
     def check_PMR_empty(response):
         updated_object = response.updated_object
 
@@ -283,8 +282,10 @@ class Coordinator(process):
             i_conflict = check_conflicts(response)
 
             if i_conflict == False:
-                # TODO send updates to DB
-
+                
+                send(('FROM_COORDINATOR_ATTR_UPDATE', response.updated_object,
+                    response.updates, response.request.timestamp), to = (database))
+                
                 update_cache(response)
 
                 updated_object_index = 0

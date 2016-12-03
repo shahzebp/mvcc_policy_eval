@@ -24,7 +24,7 @@ class Client(process):
 		self.mightWriteObject["read"]["person"] = True
 		self.mightWriteObject["read"]["bank"] = False
 
-	def setup(coordinators, my_index, config):
+	def setup(coordinators, my_index, config, database):
 		self.defReadAttrMap = collections.defaultdict(dict)
 		self.mightReadAttrMap = collections.defaultdict(dict)
 		self.mightWriteObject = collections.defaultdict(dict)
@@ -60,6 +60,7 @@ class Client(process):
 		self.total_requests = []
 
 		self.num_requests = len(request_list)
+
 		self.current_request_index = 0
 
 		self.send_sequence = 1
@@ -99,6 +100,7 @@ class Client(process):
 	def sendtask():
 
 		request = total_requests[current_request_index]
+
 		try:
 			request.defReadAttr[0] = (self.defReadAttrMap[request.action][request.object_type[0]])
 		except KeyError:
@@ -155,7 +157,7 @@ class Client(process):
 
 		sendtask()
 		
-		await(num_requests == current_request_index)
+		await(received(('EXIT',)))
 
 	def receive(msg=('OUTCOME', response), from_ = p):
 		
@@ -168,5 +170,10 @@ class Client(process):
 		
 		current_request_index  = current_request_index + 1
 
+		send(('DUMP_DATABASE',),to=(database))
+
 		if (num_requests > current_request_index):
 			sendtask()
+
+		elif (num_requests == current_request_index): 
+			send(('EXIT',), to=(self))

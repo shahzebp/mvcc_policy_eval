@@ -69,18 +69,20 @@ def main():
     
     start(coordinators)
 
+    
     # creating clients
     total_clients = int(config.get("setup", "num_clients"))
 
     clients = new(Client, num = total_clients)
     i = 0
     for p in clients : 
-        setup(p, (coordinators, i + 1, config))
+        setup(p, (coordinators, i + 1, config, database))
         i = i + 1
 
     start(clients)
     # Wait for the clients to complete
-    for c in clients:  c.join()
+
+    clients.join()
 
     # Send exit message to coordinators and database
     send(('EXIT',), to=(coordinators))

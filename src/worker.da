@@ -199,21 +199,16 @@ class Worker(process):
                                         object1_atrribute_value_map,
                                         object2_atrribute_value_map)
                     elif rule.object2_update != None:
-                        print("Second")
                         response.updated_object = database_response.request.object[1]
                         response.read_only_object = database_response.request.object[0]
                         response.updates = update_attributes_after_policy_evaluation(rule.object2_update,
                                         object2_atrribute_value_map,
                                         object1_atrribute_value_map,
                                         object2_atrribute_value_map)
-
-        print(response)
-        # If delay specified sleep for that while
         
         sleep(database_response.request.art_delay)
 
         ## TODO dummy to updated object. Correct it properly
-
 
         coordinator_id = 0
 

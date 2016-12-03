@@ -67,7 +67,7 @@ class Coordinator(process):
                     version = v
                     break
         else:
-            version = Version(attr, None)
+            version = Version(attr, None, 0)
             main_cache[id][attr].append(version)
 
         return version

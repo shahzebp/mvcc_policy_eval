@@ -223,11 +223,29 @@ class Coordinator(process):
         return False
 
     def update_cache(response):
-        pass
+        updated_object = response.updated_object
 
+        for key,val in response.updates.itemes():
+            version = Version(key, val, response.request.timestamp)
+
+            if updated_object not in main_cache:
+                main_cache[updated_object] = {}
+
+            if key not in main_cache[id]:
+                main_cache[updated_object][key] = []
+
+            main_cache[updated_object][key].append(version)
+
+        
     def check_PMR_empty(response):
-        return True
+        updated_object = response.updated_object
 
+        for key in response.updates:
+            v = latestVersionBefore(updated_object, key, response.request.timestamp)
+            if not v.pendingMightRead.empty:
+                return False
+
+        return True
 
     # object1 cooridinator receives response from the worker
     # This response is the evaluation result for the request
@@ -293,5 +311,3 @@ class Coordinator(process):
                 restart(response)
         else:
             restart(response)
-
-

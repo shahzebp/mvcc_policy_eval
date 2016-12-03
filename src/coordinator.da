@@ -136,7 +136,7 @@ class Coordinator(process):
             coordinator_id = request.object[0] % len(coordinators)
             
         send(('FROM_COORD_REQUEST', request), to=(coordinators[coordinator_id]))
-        
+
 
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
@@ -232,6 +232,9 @@ class Coordinator(process):
         for key in response.updates:
             v = latestVersionBefore(updated_object, key, response.request.timestamp)
             if v.rts > response.request.timestamp:
+                logger.error("Conflict detected for request {1}\n"
+                    .format(response.request.uuid))
+
                 return True
         
         return False
@@ -256,9 +259,16 @@ class Coordinator(process):
 
         for key in response.updates:
             v = latestVersionBefore(updated_object, key, response.request.timestamp)
-            if not v.pendingMightRead:
+
+            len_pmr = len(v.pendingMightRead)
+
+            if len_pmr > 1:
                 return False
 
+            if (len_pmr == 1) and (v.pendingMightRead[0] != response.request.uuid):
+                return False
+
+        # return true when all the attr have pmr empty
         return True
 
     # object1 cooridinator receives response from the worker
@@ -277,7 +287,6 @@ class Coordinator(process):
 
         conflict = check_conflicts(response)
 
-        
         if conflict == False:
             if response.updated_object not in PCA:
                 PCA[response.updated_object] = {}
@@ -289,7 +298,6 @@ class Coordinator(process):
                 PCA[response.updated_object][key].append(response.request.uuid)
 
             await(check_PMR_empty(response) == True)
-
             i_conflict = check_conflicts(response)
 
             if i_conflict == False:
@@ -313,7 +321,6 @@ class Coordinator(process):
 
                     if attr in response.readAttr[updated_object_index]:
                         v.rts = response.request.timestamp
-                        print(v.rts)
                         
                 send(('OUTCOME', response), to = (response.request.client))
                 

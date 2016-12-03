@@ -7,7 +7,7 @@ class Version(object):
         self.pendingMightRead = []
     
     def __str__(self):
-        return ("\nattr: {0} \
+        return ("attr: {0} \
                 \nval: {1} \
                 \nrts: {2} \
                 \nwts: {3} \

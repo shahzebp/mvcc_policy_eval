@@ -73,11 +73,16 @@ class Coordinator(process):
         return version
 
     def cachedUpdates(id, curr_object, request):
-        cachedResults = []
+        cachedResults = {}
         attrList = (request.defReadAttr[curr_object] + request.mightReadAttr[curr_object])
 
         for attr in attrList:
-            cachedResults.append(latestVersionBefore(id, attr, request.timestamp))
+            v = latestVersionBefore(id, attr, request.timestamp)
+            # if the version is not a dummy version
+            if v.wts != 0:
+                cachedResults[attr] = v.val
+            # else no need to send such cached data. Wrker will
+            # retrieve this from database
 
         return cachedResults
 

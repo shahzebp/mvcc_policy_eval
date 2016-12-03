@@ -124,8 +124,9 @@ class Database(process):
         logger.debug("[Database Emulator] Receiving updates for {0} from coordinator to commit to db\n"
                     .format(object_id, updates))
 
+
         for key, val in updates.items():
-            self.database[object_id][key].append((val, ts))
+            self.database[str(object_id)][str(key)].append((val, ts))
 
         #threading.Timer(randvalue, commit_to_db, [attributes_to_update]).start()
 
@@ -133,5 +134,3 @@ class Database(process):
         pp = pprint.PrettyPrinter(indent=4)
         logger.info("[Database Emulator] Dumping database contents to log file\n{0}"
             .format(pp.pformat(self.database)))
-
-    

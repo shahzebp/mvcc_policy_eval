@@ -228,23 +228,25 @@ class Coordinator(process):
     def check_conflicts(response):
         updated_object = response.updated_object
 
+        
         for key in response.updates:
             v = latestVersionBefore(updated_object, key, response.request.timestamp)
             if v.rts > response.request.timestamp:
                 return True
-
+        
         return False
 
     def update_cache(response):
         updated_object = response.updated_object
-
+        
         for key,val in response.updates.items():
+            
             version = Version(key, val, response.request.timestamp)
 
             if updated_object not in main_cache:
                 main_cache[updated_object] = {}
 
-            if key not in main_cache[id]:
+            if key not in main_cache[updated_object]:
                 main_cache[updated_object][key] = []
 
             main_cache[updated_object][key].append(version)
@@ -275,6 +277,7 @@ class Coordinator(process):
 
         conflict = check_conflicts(response)
 
+        
         if conflict == False:
             if response.updated_object not in PCA:
                 PCA[response.updated_object] = {}
@@ -290,12 +293,12 @@ class Coordinator(process):
             i_conflict = check_conflicts(response)
 
             if i_conflict == False:
-                
+                    
                 send(('FROM_COORDINATOR_ATTR_UPDATE', response.updated_object,
                     response.updates, response.request.timestamp), to = (database))
                 
                 update_cache(response)
-
+                
                 updated_object_index = 0
                 if (response.request.object[1] == response.updated_object):
                     updated_object_index = 1

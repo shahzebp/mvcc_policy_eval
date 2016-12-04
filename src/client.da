@@ -20,7 +20,8 @@ class Client(process):
 
 		self.defReadAttrMap["write"]["movie"] = ["viewcount"]
 
-		self.defReadAttrMap["read"]["person"] = ["position", "history"]
+		self.defReadAttrMap["read"]["person"] = ["position"]
+		self.mightReadAttrMap["read"]["person"] = ["history"]
 
 		self.defReadAttrMap["read"]["bank"] = ["name"]
 

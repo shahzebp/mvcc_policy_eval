@@ -12,35 +12,29 @@ from common import Request, Response
 class Client(process):
 
 	def static_analysis():
-		self.defReadAttrMap["write"]["person"] = ["position"]
-		self.mightReadAttrMap["write"]["person"] = ["history"]
+		self.defReadAttrMap["write"]["person"] 		= ["position"]
+		self.defReadAttrMap["write"]["bank"] 		= ["name"]
+		self.defReadAttrMap["read"]["person"] 		= ["position"]
+		self.defReadAttrMap["read"]["bank"] 		= ["name"]
 
-		self.defReadAttrMap["write"]["bank"] = ["name"]
-		self.mightReadAttrMap["write"]["bank"] = ["account"]
+		self.mightReadAttrMap["write"]["person"] 	= ["history"]
+		self.mightReadAttrMap["write"]["bank"] 		= ["account"]
+		self.mightReadAttrMap["write"]["movie"] 	= ["viewcount"]
+		self.mightReadAttrMap["read"]["movie"] 		= ["viewcount"]
+		self.mightReadAttrMap["read"]["person"] 	= ["history"]
+		self.mightReadAttrMap["read"]["viewer"] 	= ["position"]
 
-		self.mightReadAttrMap["write"]["movie"] = ["viewcount"]
+		self.mightWriteAttrMap["write"]["person"] 	= ["history"]
+		self.mightWriteAttrMap["write"]["movie"] 	= ["viewcount"]
 
-		self.mightReadAttrMap["read"]["movie"] = ["viewcount"]
-		self.defReadAttrMap["read"]["person"] = ["position"]
-		self.mightReadAttrMap["read"]["person"] = ["history"]
-
-		self.defReadAttrMap["read"]["bank"] = ["name"]
-
-		self.mightReadAttrMap["read"]["viewer"] = ["position"]
-
-		self.mightWriteObject["read"]["person"] = False
-		self.mightWriteObject["read"]["bank"] = False
-		self.mightWriteObject["read"]["movie"] = False
-		self.mightWriteObject["read"]["viewer"] = False
-
-
-		self.mightWriteObject["write"]["person"] = True
-		self.mightWriteObject["write"]["bank"] = False
-		self.mightWriteObject["write"]["movie"] = True
-		self.mightWriteObject["write"]["viewer"] = False
-
-		self.mightWriteAttrMap["write"]["person"] = ["history"]
-		self.mightWriteAttrMap["write"]["movie"] = ["viewcount"]
+		self.mightWriteObject["write"]["person"] 	= True
+		self.mightWriteObject["write"]["bank"] 		= False
+		self.mightWriteObject["write"]["movie"] 	= True
+		self.mightWriteObject["write"]["viewer"] 	= False
+		self.mightWriteObject["read"]["person"] 	= False
+		self.mightWriteObject["read"]["bank"] 		= False
+		self.mightWriteObject["read"]["movie"] 		= False
+		self.mightWriteObject["read"]["viewer"] 	= False
 
 	def setup(coordinators, my_index, config, database):
 		self.defReadAttrMap = collections.defaultdict(dict)

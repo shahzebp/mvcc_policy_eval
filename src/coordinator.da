@@ -363,7 +363,6 @@ class Coordinator(process):
                     
                 send(('FROM_COORDINATOR_ATTR_UPDATE', response.updated_object,
                     response.updates, response.request.timestamp), to = (database))
-                
                 update_cache(response)
                 
                 

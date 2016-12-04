@@ -40,4 +40,17 @@
     <action name="read"></action>
   </rule>
 
+  <rule name="Player Wants to play a certain game with a certain expertise(position)">
+    <object1Condition position="expert"></object1Condition>
+    <object2Condition name="counter_strike"></object2Condition>
+    <action name="read"></action>
+  </rule>
+
+  <rule name="Player Wants to play a certain game with a certain expertise level(position)">
+    <object1Condition position="expert" history=""></object1Condition>
+    <object2Condition name="counter_strike"></object2Condition>
+    <action name="write"></action>
+    <object1Update history="counter_strike"></object1Update>
+  </rule>
+
 </policy>

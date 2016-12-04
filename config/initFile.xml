@@ -9,8 +9,8 @@
     <object id="11">
         <attribute position= "employee" history="bank B"/>
     </object>
-    <object id = "66">
-        <attribute position="player" age="20" gameswatched="0"/>
+    <object id = "67">
+        <attribute position="expert" history=""/>
     </object>
     <object id="55">
         <attribute position= "customer" age="22"/>
@@ -37,6 +37,6 @@
         <attribute type= "show" viewcount="0"/>
     </object>
     <object id="44420">
-        <attribute type= "game" viewcount="0"/>
+        <attribute name="counter_strike"/>
     </object>      
 </data>

@@ -9,7 +9,7 @@
   </rule>
 
   <rule name="access bank A first time">
-    <object1Condition position="employee" history="bank A"></object1Condition>
+    <object1Condition position="employee" history=""></object1Condition>
     <object2Condition name="bank A"></object2Condition>
     <action name="read"></action>
   </rule>

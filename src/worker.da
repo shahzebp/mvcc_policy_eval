@@ -8,7 +8,7 @@ import logging.config
 import operator
 
 class Worker(process):
-    def setup(coordinators, database, config):
+    def setup(coordinators, session_id, database, config):
         
         self.logger = logging.getLogger('sLogger')
         self.exit = False
@@ -218,13 +218,13 @@ class Worker(process):
             send(('OUTCOME', response), to = (response.request.client))
             
             coordinator_id = response.request.object[0] % len(coordinators)    
-            send(('FROM_WORKER_READATTR', response, 0), to = (coordinators[coordinator_id]))
+            send(('FROM_WORKER_READATTR', response, 0, True), to = (coordinators[coordinator_id]))
 
             coordinator_id = response.request.object[1] % len(coordinators)    
-            send(('FROM_WORKER_READATTR', response, 1), to = (coordinators[coordinator_id]))
+            send(('FROM_WORKER_READATTR', response, 1, True), to = (coordinators[coordinator_id]))
 
         else:
             coordinator_id = response.updated_object % len(coordinators)
-            send(('FROM_WORKER_RESPONSE', response), to = (coordinators[coordinator_id]))
+            send(('FROM_WORKER_RESPONSE', response, session_id), to = (coordinators[coordinator_id]))
 
         return

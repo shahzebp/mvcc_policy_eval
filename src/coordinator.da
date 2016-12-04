@@ -44,7 +44,7 @@ class Coordinator(process):
 
         workers_set     = new(Worker, num = num_worker)
         self.workers    = list(workers_set)
-        setup(self.workers, (coordinators, database, config))
+        setup(self.workers, (coordinators, self.session_id, database, config))
         start(workers)
 
     def run():
@@ -271,7 +271,7 @@ class Coordinator(process):
     # object1 cooridinator receives response from the worker
     # This response is the evaluation result for the request
     # There exists a compostion of request inside response
-    def receive(msg=('FROM_WORKER_READATTR', response, i), from_=p):
+    def receive(msg=('FROM_WORKER_READATTR', response, i, is_prediction_correct), from_=p):
 
         logger.info("[Coord] Response received (UUID. {0}) from {1}"
             .format(response.request.uuid, p))
@@ -286,7 +286,7 @@ class Coordinator(process):
             if attr in response.readAttr[i]:
                 v.rts = response.request.timestamp
 
-        if (response.request.read_only == False):
+        if (is_prediction_correct == True and response.request.read_only == False):
             for key in response.request.mightWriteAttr[i]:
                 PCA[response.request.object[i]][key].remove(response.request.uuid)
 
@@ -337,10 +337,10 @@ class Coordinator(process):
     # object1 cooridinator receives response from the worker
     # This response is the evaluation result for the request
     # There exists a compostion of request inside response
-    def receive(msg=('FROM_WORKER_RESPONSE', response), from_=p):
+    def receive(msg=('FROM_WORKER_RESPONSE', response, sessionID), from_=p):
 
         #TODO check session id. if not equal then return
-
+        logger.info("[Coord] Coorindator Session ID. {0} and Worker Session ID: {1}".format(self.session_id, sessionID))
         logger.info("[Coord] Response received (UUID. {0}) from Worker"
             .format(response.request.uuid))
         logger.debug("[Coord] Response received (seq. {0}) from Worker: {1}"
@@ -349,6 +349,9 @@ class Coordinator(process):
         recv_sequence = recv_sequence + 1
         
         updated_object_index = 0
+        is_prediction_correct = True
+        if(self.session_id != sessionID):
+            is_prediction_correct = False
 
         if (response.request.object[1] == response.updated_object):
             updated_object_index = 1
@@ -358,7 +361,6 @@ class Coordinator(process):
         if conflict == False:
             await(check_PMR_empty(response) == True)
             i_conflict = check_conflicts(response)
-
             if i_conflict == False:
                     
                 send(('FROM_COORDINATOR_ATTR_UPDATE', response.updated_object,
@@ -378,9 +380,12 @@ class Coordinator(process):
                         v.rts = response.request.timestamp
                         
                 send(('OUTCOME', response), to = (response.request.client))
-                
+                if (is_prediction_correct == False):
+                    for key in response.request.mightWriteAttr[updated_object_index]:
+                        PCA[response.request.object[updated_object_index]][key].remove(response.request.uuid)
+
                 coordinator_id = response.read_only_object % len(coordinators)    
-                send(('FROM_WORKER_READATTR', response, not(updated_object_index)), to = (coordinators[coordinator_id]))
+                send(('FROM_WORKER_READATTR', response, not(updated_object_index), is_prediction_correct), to = (coordinators[coordinator_id]))
 
                 #for key in response.mightWriteAttr[0]:
                 #   PCA[response.updated_object][key].remove(response.request.uuid)

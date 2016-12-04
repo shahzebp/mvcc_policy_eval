@@ -91,6 +91,11 @@ class Coordinator(process):
         return cachedResults
 
     def restart(response):
+        request = response.request
+
+        logger.info("[Coord {2}] Restarting request (UUID: {1}) to Coord {0} "
+            .format(request.swapped, request.uuid, int(not request.swapped)))
+
         coordinator_id = response.read_only_object % len(coordinators)    
         send(('FROM_RESTART', response.request), to = (coordinators[coordinator_id]))
 
@@ -138,8 +143,12 @@ class Coordinator(process):
         curr_object = request.swapped
 
         if (request.read_only):
+            #print("this should hit ", request.uuid)
             for attr in request.defReadAttr[curr_object]:
-                latestVersionBefore(request.object[curr_object], attr, request.timestamp).rts = request.timestamp
+                v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
+                v.rts = request.timestamp
+                #print("rts getting updated for ", v)
+
 
             for attr in request.mightReadAttr[curr_object]:
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
@@ -196,6 +205,7 @@ class Coordinator(process):
 
         pca_id = not(request.swapped)
 
+        '''
         await(check_pca(pca_id, request) == True)
 
         if request.object[pca_id] not in PCA:
@@ -206,8 +216,8 @@ class Coordinator(process):
                 PCA[request.object[pca_id]][key] = []
 
             PCA[request.object[pca_id]][key].append(request.uuid)
-
-
+        '''
+        
         logger.info("[Coord {0}] Request received (UUID: {1}) from Coord {2}"
             .format(int(not request.swapped), request.uuid, request.swapped))
         logger.debug("[Coord {0}] Request received (seq. {1}) from  Coord {2}: {3}"
@@ -222,7 +232,8 @@ class Coordinator(process):
 
         if (request.read_only):
             for attr in request.defReadAttr[curr_object]:
-                latestVersionBefore(request.object[curr_object], attr, request.timestamp).rts = request.timestamp
+                v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
+                v.rts = request.timestamp
 
             for attr in request.mightReadAttr[curr_object]:
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
@@ -267,16 +278,18 @@ class Coordinator(process):
             if attr in response.readAttr[i]:
                 v.rts = response.request.timestamp
 
+        if (response.request.read_only == False):
+            for key in response.mightWriteAttr[i]:
+                PCA[response.request.object[i]][key].remove(response.request.uuid)
+
     def check_conflicts(response):
         updated_object = response.updated_object
-
         
         for key in response.updates:
             v = latestVersionBefore(updated_object, key, response.request.timestamp)
-            if v.rts > response.request.timestamp:
-                logger.error("Conflict detected for request {1}\n"
-                    .format(response.request.uuid))
-
+            
+            if v.rts > response.request.timestamp:                
+                logger.error("Conflict detected for request %s\n",response.request.uuid)
                 return True
         
         return False
@@ -361,13 +374,14 @@ class Coordinator(process):
                 coordinator_id = response.read_only_object % len(coordinators)    
                 send(('FROM_WORKER_READATTR', response, not(updated_object_index)), to = (coordinators[coordinator_id]))
 
-                for key in response.updates:
-                    PCA[response.updated_object][key].remove(response.request.uuid)
+                #for key in response.mightWriteAttr[0]:
+                #   PCA[response.updated_object][key].remove(response.request.uuid)
             else:
-                for key in response.updates:
-                    PCA[response.updated_object][key].remove(response.request.uuid)
+                #for key in response.mightWriteAttr:
+                #    PCA[response.updated_object][key].remove(response.request.uuid)
 
                 restart(response)
+            
         else:
             restart(response)
         

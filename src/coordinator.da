@@ -95,11 +95,40 @@ class Coordinator(process):
         send(('FROM_RESTART', response.request), to = (coordinators[coordinator_id]))
 
 
+    def check_pca(id, request):
+        attr_list = request.defReadAttr[id] + request.mightReadAttr[id]
+
+        for attr in attr_list:
+            try:
+                if (PCA[request.object[id]][attr]):
+                    return False
+            except KeyError:
+                pass
+
+        return True
+
+
     # Initial process when request is received.
     # This is also the point of start for restart
     def entrypoint(request):
 
+        pca_id = request.swapped
+        
+        await(check_pca(pca_id, request) == True)
+        
         request.timestamp   = time.time()
+
+        # populating the pca for potential write
+        # conflicting attributes
+        
+        if request.object[pca_id] not in PCA:
+            PCA[request.object[pca_id]] = {}
+
+        for key in request.mightWriteAttr[pca_id]:
+            if key not in PCA[request.object[pca_id]]:
+                PCA[request.object[pca_id]][key] = []
+
+            PCA[request.object[pca_id]][key].append(request.uuid)
 
         logger.info("[Coord {0}] Sending request (UUID: {1}) to Coord {2} "
             .format(request.swapped, request.uuid, int(not request.swapped)))
@@ -126,7 +155,6 @@ class Coordinator(process):
         # send this to next coordinator
         send_sequence =  send_sequence + 1
         
-        
         # Need to send to appropriate coordinator
         coordinator_id = 0
 
@@ -136,7 +164,7 @@ class Coordinator(process):
             coordinator_id = request.object[0] % len(coordinators)
             
         send(('FROM_COORD_REQUEST', request), to=(coordinators[coordinator_id]))
-
+        
 
     # Receive the request from the client
     def receive(msg=('FROM_CLIENT', request), from_=p):
@@ -165,7 +193,21 @@ class Coordinator(process):
 
     # Receive the request from object1 coordinator
     def receive(msg=('FROM_COORD_REQUEST', request), from_=p):
-        
+
+        pca_id = not(request.swapped)
+
+        await(check_pca(pca_id, request) == True)
+
+        if request.object[pca_id] not in PCA:
+            PCA[request.object[pca_id]] = {}
+
+        for key in request.mightWriteAttr[pca_id]:
+            if key not in PCA[request.object[pca_id]]:
+                PCA[request.object[pca_id]][key] = []
+
+            PCA[request.object[pca_id]][key].append(request.uuid)
+
+
         logger.info("[Coord {0}] Request received (UUID: {1}) from Coord {2}"
             .format(int(not request.swapped), request.uuid, request.swapped))
         logger.debug("[Coord {0}] Request received (seq. {1}) from  Coord {2}: {3}"
@@ -288,6 +330,7 @@ class Coordinator(process):
         conflict = check_conflicts(response)
 
         if conflict == False:
+            '''
             if response.updated_object not in PCA:
                 PCA[response.updated_object] = {}
 
@@ -296,6 +339,7 @@ class Coordinator(process):
                     PCA[response.updated_object][key] = []
 
                 PCA[response.updated_object][key].append(response.request.uuid)
+            '''
 
             await(check_PMR_empty(response) == True)
             i_conflict = check_conflicts(response)

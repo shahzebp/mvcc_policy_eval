@@ -198,8 +198,6 @@ class Coordinator(process):
 
         await(check_pca(pca_id, request) == True)
 
-        #print("crossing await")
-
         if request.object[pca_id] not in PCA:
             PCA[request.object[pca_id]] = {}
 
@@ -328,21 +326,11 @@ class Coordinator(process):
             .format(recv_sequence, response))
         
         recv_sequence = recv_sequence + 1
-
+        
         conflict = check_conflicts(response)
 
         if conflict == False:
-            '''
-            if response.updated_object not in PCA:
-                PCA[response.updated_object] = {}
-
-            for key in response.updates:
-                if key not in PCA[response.updated_object]:
-                    PCA[response.updated_object][key] = []
-
-                PCA[response.updated_object][key].append(response.request.uuid)
-            '''
-
+            
             await(check_PMR_empty(response) == True)
             i_conflict = check_conflicts(response)
 
@@ -371,7 +359,7 @@ class Coordinator(process):
                 send(('OUTCOME', response), to = (response.request.client))
                 
                 coordinator_id = response.read_only_object % len(coordinators)    
-                send(('FROM_WORKER_READATTR', response, 0), to = (coordinators[coordinator_id]))
+                send(('FROM_WORKER_READATTR', response, not(updated_object_index)), to = (coordinators[coordinator_id]))
 
                 for key in response.updates:
                     PCA[response.updated_object][key].remove(response.request.uuid)
@@ -382,3 +370,4 @@ class Coordinator(process):
                 restart(response)
         else:
             restart(response)
+        

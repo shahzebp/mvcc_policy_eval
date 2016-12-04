@@ -279,7 +279,7 @@ class Coordinator(process):
                 v.rts = response.request.timestamp
 
         if (response.request.read_only == False):
-            for key in response.mightWriteAttr[i]:
+            for key in response.request.mightWriteAttr[i]:
                 PCA[response.request.object[i]][key].remove(response.request.uuid)
 
     def check_conflicts(response):

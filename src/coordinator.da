@@ -105,7 +105,6 @@ class Coordinator(process):
             except KeyError:
                 pass
 
-        print("no pca ", request.uuid)
         return True
 
 
@@ -198,6 +197,8 @@ class Coordinator(process):
         pca_id = not(request.swapped)
 
         await(check_pca(pca_id, request) == True)
+
+        #print("crossing await")
 
         if request.object[pca_id] not in PCA:
             PCA[request.object[pca_id]] = {}

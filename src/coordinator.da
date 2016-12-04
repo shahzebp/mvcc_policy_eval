@@ -105,6 +105,7 @@ class Coordinator(process):
             except KeyError:
                 pass
 
+        print("no pca ", request.uuid)
         return True
 
 

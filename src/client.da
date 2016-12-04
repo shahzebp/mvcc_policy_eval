@@ -24,6 +24,8 @@ class Client(process):
 
 		self.defReadAttrMap["read"]["bank"] = ["name"]
 
+		self.mightReadAttrMap["read"]["movie"] = ["position"]
+
 		self.mightWriteObject["read"]["person"] = False
 		self.mightWriteObject["read"]["bank"] = False
 

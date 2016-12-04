@@ -90,15 +90,19 @@ class Coordinator(process):
 
         return cachedResults
 
-    def restart(response):
+    def restart(response, id):
         request = response.request
+
+        for attr in request.defReadAttr[id] + request.mightReadAttr[id]:
+            v = latestVersionBefore(response.request.object[id], attr, response.request.timestamp)
+            v.pendingMightRead.remove(response.request.uuid)
 
         logger.info("[Coord {2}] Restarting request (UUID: {1}) to Coord {0} "
             .format(request.swapped, request.uuid, int(not request.swapped)))
 
         coordinator_id = response.read_only_object % len(coordinators)    
-        send(('FROM_RESTART', response.request), to = (coordinators[coordinator_id]))
 
+        send(('FROM_RESTART', response.request, not(id)), to = (coordinators[coordinator_id]))
 
     def check_pca(id, request):
         attr_list = request.defReadAttr[id] + request.mightReadAttr[id]
@@ -189,13 +193,17 @@ class Coordinator(process):
         
         entrypoint(request)
     
-    def receive(msg=('FROM_RESTART', request), from_=p):
+    def receive(msg=('FROM_RESTART', request, id), from_=p):
         
         logger.info("[Coord {0}] Request received (UUID: {1}) from Client"
             .format(request.swapped, request.uuid))
         logger.debug("[Coord {0}] Request received (seq. {1}) from Client: {2}"
             .format(request.swapped, recv_sequence, request))
         
+        for attr in request.defReadAttr[id] + request.mightReadAttr[id]:
+            v = latestVersionBefore(request.object[id], attr, request.timestamp)
+            v.pendingMightRead.remove(request.uuid)
+
         recv_sequence = recv_sequence + 1
         
         entrypoint(request)
@@ -340,10 +348,14 @@ class Coordinator(process):
         
         recv_sequence = recv_sequence + 1
         
+        updated_object_index = 0
+
+        if (response.request.object[1] == response.updated_object):
+            updated_object_index = 1
+
         conflict = check_conflicts(response)
 
         if conflict == False:
-            
             await(check_PMR_empty(response) == True)
             i_conflict = check_conflicts(response)
 
@@ -354,11 +366,7 @@ class Coordinator(process):
                 
                 update_cache(response)
                 
-                updated_object_index = 0
-                if (response.request.object[1] == response.updated_object):
-                    updated_object_index = 1
-
-
+                
                 attr_list = (response.request.defReadAttr[updated_object_index] +
                             response.request.mightReadAttr[updated_object_index])
 
@@ -380,8 +388,8 @@ class Coordinator(process):
                 #for key in response.mightWriteAttr:
                 #    PCA[response.updated_object][key].remove(response.request.uuid)
 
-                restart(response)
+                restart(response, updated_object_index)
             
         else:
-            restart(response)
+            restart(response, updated_object_index)
         

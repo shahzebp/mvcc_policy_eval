@@ -34,4 +34,10 @@
     <object2Update viewCount="++"></object2Update>
   </rule>
 
+  <rule name="customers collectively can view each movie at most 5 times">
+    <object1Condition position="customer"></object1Condition>
+    <object2Condition viewCount="&lt;5"></object2Condition>
+    <action name="read"></action>
+  </rule>
+
 </policy>

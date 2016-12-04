@@ -31,12 +31,12 @@
         <attribute name= "bank B"/>
     </object>
     <object id="44403">
-        <attribute type= "movie" viewCount="0"/>
+        <attribute type= "movie" viewcount="0"/>
     </object>
     <object id="44409">
-        <attribute type= "show" viewCount="0"/>
+        <attribute type= "show" viewcount="0"/>
     </object>
     <object id="44420">
-        <attribute type= "game" viewCount="0"/>
+        <attribute type= "game" viewcount="0"/>
     </object>      
 </data>

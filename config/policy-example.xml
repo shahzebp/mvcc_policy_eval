@@ -29,14 +29,14 @@
 
   <rule name="customers collectively can view each movie at most 5 times">
     <object1Condition position="customer"></object1Condition>
-    <object2Condition viewCount="&lt;5"></object2Condition>
+    <object2Condition viewcount="&lt;5"></object2Condition>
     <action name="write"></action>
-    <object2Update viewCount="++"></object2Update>
+    <object2Update viewcount="++"></object2Update>
   </rule>
 
   <rule name="customers collectively can view each movie at most 5 times">
     <object1Condition position="customer"></object1Condition>
-    <object2Condition viewCount="&lt;5"></object2Condition>
+    <object2Condition viewcount="&lt;5"></object2Condition>
     <action name="read"></action>
   </rule>
 

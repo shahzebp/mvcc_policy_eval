@@ -4,26 +4,20 @@
   <rule name="access bank A first time">
     <object1Condition position="employee" history=""></object1Condition>
     <object2Condition name="bank A"></object2Condition>
-    <action name="read"></action>
+    <action name="write"></action>
     <object1Update history="$object2.name"></object1Update>
   </rule>
 
-  <rule name="access bank A again">
+  <rule name="access bank A first time">
     <object1Condition position="employee" history="bank A"></object1Condition>
     <object2Condition name="bank A"></object2Condition>
     <action name="read"></action>
   </rule>
 
-  <rule name="update bank A again">
-    <object1Condition position="manager" history="bank A"></object1Condition>
-    <object2Condition name="bank A"></object2Condition>
-    <action name="update"></action>
-  </rule>
-
   <rule name="access bank B first time">
     <object1Condition position="employee" history=""></object1Condition>
     <object2Condition name="bank B" account="checkings"></object2Condition>
-    <action name="read"></action>
+    <action name="write"></action>
     <object1Update history="bank B"></object1Update>
   </rule>
 
@@ -36,7 +30,7 @@
   <rule name="customers collectively can view each movie at most 5 times">
     <object1Condition position="customer"></object1Condition>
     <object2Condition viewCount="&lt;5"></object2Condition>
-    <action name="view"></action>
+    <action name="write"></action>
     <object2Update viewCount="++"></object2Update>
   </rule>
 

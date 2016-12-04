@@ -12,20 +12,26 @@ from common import Request, Response
 class Client(process):
 
 	def static_analysis():
-		self.defReadAttrMap["read"]["bank"] = ["name"]
+		self.defReadAttrMap["write"]["person"] = ["position"]
+		self.mightReadAttrMap["write"]["person"] = ["history"]
+
+		self.defReadAttrMap["write"]["bank"] = ["name"]
+		self.mightReadAttrMap["write"]["bank"] = ["account"]
+
+		self.defReadAttrMap["write"]["movie"] = ["viewcount"]
+
 		self.defReadAttrMap["read"]["person"] = ["position", "history"]
-		self.defReadAttrMap["view"]["movie"] = ["viewcount"]
-		self.defReadAttrMap["view"]["person"] = ["position"]
 
-		self.mightReadAttrMap["read"]["bank"] = ["account"]
+		self.defReadAttrMap["read"]["bank"] = ["name"]
 
-		self.mightWriteObject["view"]["movie"] = True
-		self.mightWriteObject["view"]["person"] = False
-		self.mightWriteObject["read"]["person"] = True
+		self.mightWriteObject["read"]["person"] = False
 		self.mightWriteObject["read"]["bank"] = False
 
-		self.mightWriteAttrMap["read"]["person"] = ["history"]
-		self.mightWriteAttrMap["view"]["movie"] = ["viewcount"]
+		self.mightWriteObject["write"]["person"] = True
+		self.mightWriteObject["write"]["bank"] = False
+		self.mightWriteObject["write"]["movie"] = True
+
+		self.mightWriteAttrMap["write"]["person"] = ["history"]
 
 	def setup(coordinators, my_index, config, database):
 		self.defReadAttrMap = collections.defaultdict(dict)

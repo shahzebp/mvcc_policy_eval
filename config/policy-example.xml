@@ -53,4 +53,17 @@
     <object1Update history="counter_strike"></object1Update>
   </rule>
 
+  <rule name="Students want to issues books in the library">
+    <object1Condition position="student"></object1Condition>
+    <object2Condition issued="&lt;5"></object2Condition>
+    <action name="write"></action>
+    <object2Update issued="++"></object2Update>
+  </rule>
+
+  <rule name="Students want to issues books in the library">
+    <object1Condition position="student"></object1Condition>
+    <object2Condition issued="&lt;5"></object2Condition>
+    <action name="read"></action>
+  </rule>
+
 </policy>

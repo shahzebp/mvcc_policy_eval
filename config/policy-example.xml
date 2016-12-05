@@ -29,7 +29,7 @@
 
   <rule name="customers collectively can view each movie at most 5 times">
     <object1Condition position="customer"></object1Condition>
-    <object2Condition viewcount="&lt;5"></object2Condition>
+    <object2Condition viewcount="&lt;500"></object2Condition>
     <action name="write"></action>
     <object2Update viewcount="++"></object2Update>
   </rule>
@@ -52,6 +52,7 @@
     <action name="write"></action>
     <object1Update history="counter_strike"></object1Update>
   </rule>
+
 
   <rule name="Students want to issues books in the library">
     <object1Condition position="student"></object1Condition>

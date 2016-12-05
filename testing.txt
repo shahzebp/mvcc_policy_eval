@@ -1,0 +1,27 @@
+Testing scenarios
+
+1) 	Simple Write: the coordinator coord(oW) for the object oW written by a
+	read-write request r receives the result of r from the worker and immediately commits r
+
+2)	Delayed Commit: Similar to above. Except that the commit of r is delayed,
+	because some of the pendingMightRead sets for relevant attributes are non-empty when coord(oW) receives the result of r from the worker.
+
+3)	Outer conflict check: the coordinator coord(oW) for the object oW written
+	by a read-write request r receives the result of r from the worker, immediately detects a conflict, and re-starts r.
+
+4)	Inner conflict check: the coordinator coord(oW) for the object oW written
+	by a read-write request r receives the result of r from the worker, waits
+	for relevant pendingMightReads to be resolved, and then detects a conflict
+	and re-starts r.
+
+5)	Wrong Prediction and delayed commit: similar to (2), except the client
+	incorrectly predicts which object is written.
+
+6)	Wrong Prediction and inner conflict check: similar to (4), except the
+	client incorrectly predicts which object is written.
+
+7)	Read Throttling: a read request is delayed in order to prevent starvation
+	of writes, and later released and processed.
+
+8)  Stress testing: Consecutive 200 write requests. All of them are successful
+	and the database dump shows 200 versions appended in the end

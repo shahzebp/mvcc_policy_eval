@@ -112,10 +112,11 @@ class Coordinator(process):
         for attr in attr_list:
             try:
                 if (PCA[request.object[id]][attr]):
+                    logger.info("[Coord] Throttling request %s\n",request.uuid)
                     return False
             except KeyError:
                 pass
-
+        logger.info("[Coord] Releasing request %s\n",request.uuid)
         return True
 
 

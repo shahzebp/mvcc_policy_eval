@@ -70,6 +70,11 @@ class Client(process):
 
 		self.num_requests = 0
 
+		self.start_time		= 0
+		self.end_time 		= 0
+
+		self.diff_sum = 0
+
 	def sendtask():
 
 		request = total_requests[current_request_index]
@@ -131,6 +136,8 @@ class Client(process):
 			logger.debug("[Client {3}] Request sent (seq. {0}) to object {1} Coord {2}"
 				.format(send_sequence, request.swapped, request, my_index))
 			coordinator_id = request.object[1] % len(coordinators)
+
+		start_time = time.time()
 
 		send(('FROM_CLIENT', request),to=(coordinators[coordinator_id]))
 
@@ -199,6 +206,13 @@ class Client(process):
 
 	def receive(msg=('OUTCOME', response), from_ = p):
 		
+		end_time = time.time()
+
+		diff = (end_time - start_time)
+
+		diff_sum = diff_sum + diff
+
+
 		logger.info("[Client] Final Response received (UUID: {0}) from object1 Coord With Result: {1}"
 			.format(response.request.uuid, response.result))
 		logger.debug("[Client] Response received (seq. {0}) from object1 Coord {1}"
@@ -214,4 +228,7 @@ class Client(process):
 			sendtask()
 
 		elif (num_requests == current_request_index): 
+			if (num_requests == 200):
+				logger.info("Performance: Mean time for one write request %s microseconds", (diff_sum / 200) * 1000000)
+
 			send(('EXIT',), to=(self))

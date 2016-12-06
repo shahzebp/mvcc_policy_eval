@@ -214,7 +214,7 @@ class Worker(process):
 
         coordinator_id = 0
 
-        if(response.updated_object == -1):
+        if(response.request.read_only == True):
             send(('OUTCOME', response), to = (response.request.client))
             
             coordinator_id = response.request.object[0] % len(coordinators)    
@@ -224,7 +224,10 @@ class Worker(process):
             send(('FROM_WORKER_READATTR', response, 1, True), to = (coordinators[coordinator_id]))
 
         else:
-            coordinator_id = response.updated_object % len(coordinators)
+            if (response.updated_object == -1):
+                coordinator_id = response.request.object[not(response.request.swapped)] % len(coordinators)
+            else:
+                coordinator_id = response.updated_object % len(coordinators)
             send(('FROM_WORKER_RESPONSE', response, session_id), to = (coordinators[coordinator_id]))
 
         return

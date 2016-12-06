@@ -25,3 +25,18 @@ Testing scenarios
 
 8)  Stress testing: Consecutive 200 write requests. All of them are successful
 	and the database dump shows 200 versions appended in the end
+
+Performance Evaluation:
+
+We did the performance evaluation with the stress test itself described above. We did the
+evaluation with respect to the write requests because doing it with just read request doesn't give
+any information. Write request employs both read and write of attributes. We pump 200 requests
+and find out the average time required to receive response of each request on the client side.
+This is the RTT time for one request without any worker latency.
+
+So for 1 write request, mvcc based implemenation requires 13555 micro seconds
+
+This exact scenario when run under phase 2 implementation.
+1 write request there requires 15204 micro seconds.
+
+So the mvcc based implementation beats the phase 2 implemenation by ~2000 microseconds.

@@ -24,15 +24,19 @@ class Client(process):
 		self.mightReadAttrMap["write"]["person"] 	= ["history"]
 		self.mightReadAttrMap["write"]["bank"] 		= ["account"]
 		self.mightReadAttrMap["write"]["movie"] 	= ["viewcount"]
+		self.mightReadAttrMap["write"]["books"] 	= ["issued"]
 		self.mightReadAttrMap["read"]["player"]		= ["history"]
 		self.mightReadAttrMap["read"]["movie"] 		= ["viewcount"]
 		self.mightReadAttrMap["read"]["person"] 	= ["history"]
 		self.mightReadAttrMap["read"]["viewer"] 	= ["position"]
+		self.mightReadAttrMap["read"]["title"] 		= ["position"]
+		self.mightReadAttrMap["read"]["books"] 		= ["issued"]
 
 		self.mightWriteAttrMap["write"]["person"] 	= ["history"]
 		self.mightWriteAttrMap["write"]["movie"] 	= ["viewcount"]
 		self.mightWriteAttrMap["write"]["player"] 	= ["history"]
 		self.mightWriteAttrMap["write"]["game"] 	= ["name"]
+		self.mightWriteAttrMap["write"]["title"] 	= ["position"]
 
 		self.mightWriteObject["write"]["person"] 	= True
 		self.mightWriteObject["write"]["bank"] 		= False
@@ -46,6 +50,10 @@ class Client(process):
 		self.mightWriteObject["write"]["game"] 		= True
 		self.mightWriteObject["read"]["player"] 	= False
 		self.mightWriteObject["read"]["game"] 		= False
+		self.mightWriteObject["write"]["books"] 	= False
+		self.mightWriteObject["write"]["title"] 	= True
+		self.mightWriteObject["read"]["books"] 		= False
+		self.mightWriteObject["read"]["title"] 		= False
 
 	def setup(coordinators, my_index, config, database):
 		self.defReadAttrMap = collections.defaultdict(dict)

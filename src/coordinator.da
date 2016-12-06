@@ -90,7 +90,7 @@ class Coordinator(process):
 
         return cachedResults
 
-    def restart(response, id):
+    def restart(response, id, is_prediction_correct):
         request = response.request
 
         for attr in request.defReadAttr[id] + request.mightReadAttr[id]:
@@ -100,8 +100,10 @@ class Coordinator(process):
         logger.info("[Coord {2}] Restarting request (UUID: {1}) to Coord {0} "
             .format(request.swapped, request.uuid, int(not request.swapped)))
 
-        coordinator_id = response.read_only_object % len(coordinators)    
-
+        if (is_prediction_correct):
+            coordinator_id = response.read_only_object % len(coordinators)
+        else:
+            coordinator_id = response.request.object[id] % len(coordinators)
         send(('FROM_RESTART', response.request, not(id)), to = (coordinators[coordinator_id]))
 
     def check_pca(id, request):
@@ -277,6 +279,7 @@ class Coordinator(process):
             .format(recv_sequence, p, response))
         recv_sequence = recv_sequence + 1
 
+
         for attr in response.request.mightReadAttr[i]:
             v = latestVersionBefore(response.request.object[i], attr, response.request.timestamp)
             v.pendingMightRead.remove(response.request.uuid)
@@ -376,7 +379,7 @@ class Coordinator(process):
 
                     if attr in response.readAttr[updated_object_index]:
                         v.rts = response.request.timestamp
-                        
+
                 send(('OUTCOME', response), to = (response.request.client))
                 if (is_prediction_correct == False):
                     for key in response.request.mightWriteAttr[updated_object_index]:
@@ -394,12 +397,15 @@ class Coordinator(process):
                 logger.error("[Coord] Inner conflict detected for {0}"
                     .format(response.request.uuid))
         
-                restart(response, updated_object_index)
+
+                restart(response, (updated_object_index), is_prediction_correct)
+
             
         else:
 
             logger.error("[Coord] Outer conflict detected for {0}"
                 .format(response.request.uuid))
 
-            restart(response, updated_object_index)
+            restart(response, (updated_object_index), is_prediction_correct)
+
         

@@ -21,8 +21,8 @@
     <object id="57">
         <attribute position= "customer" age="24"/>
     </object>
-    <object id="99">
-        <attribute position= "nurse" history=""/>
+    <object id="98">
+        <attribute position= "student"/>
     </object>
     <object id="44401">
         <attribute name= "bank A"/>
@@ -34,7 +34,7 @@
         <attribute type= "movie" viewcount="0"/>
     </object>
     <object id="44409">
-        <attribute type= "show" viewcount="0"/>
+        <attribute issued="0"/>
     </object>
     <object id="44420">
         <attribute name="counter_strike"/>

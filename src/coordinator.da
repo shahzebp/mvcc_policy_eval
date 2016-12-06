@@ -247,6 +247,7 @@ class Coordinator(process):
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
                 v.pendingMightRead.append(request.uuid)
 
+
         else:
             for attr in (request.defReadAttr[curr_object] + request.mightReadAttr[curr_object]):
                 v = latestVersionBefore(request.object[curr_object], attr, request.timestamp)
@@ -265,6 +266,7 @@ class Coordinator(process):
 
         # Round robin worker usage for fair share distribution
         worker_index = worker_index + 1
+
         if worker_index == len(workers):
             worker_index = 0
 
@@ -307,9 +309,7 @@ class Coordinator(process):
         updated_object = response.updated_object
         
         for key,val in response.updates.items():
-            
             version = Version(key, val, response.request.timestamp)
-
 
             if updated_object not in main_cache:
                 main_cache[updated_object] = {}
@@ -349,13 +349,20 @@ class Coordinator(process):
         
         recv_sequence = recv_sequence + 1
         
-        updated_object_index = 0
         is_prediction_correct = True
+        
         if(self.session_id != sessionID):
             is_prediction_correct = False
 
-        if (response.request.object[1] == response.updated_object):
-            updated_object_index = 1
+        updated_object_index = 0
+
+        if (response.updated_object == -1):
+            updated_object_index = not(response.request.swapped)
+            response.updated_object = response.request.object[updated_object_index]
+
+        else:
+            if (response.request.object[1] == response.updated_object):
+                updated_object_index = 1
 
         conflict = check_conflicts(response)
 
@@ -363,18 +370,19 @@ class Coordinator(process):
             await(check_PMR_empty(response) == True)
 
             i_conflict = check_conflicts(response)
+            
             if i_conflict == False:
                     
                 send(('FROM_COORDINATOR_ATTR_UPDATE', response.updated_object,
                     response.updates, response.request.timestamp), to = (database))
-                update_cache(response)
                 
+                update_cache(response)
                 
                 attr_list = (response.request.defReadAttr[updated_object_index] +
                             response.request.mightReadAttr[updated_object_index])
 
                 for attr in attr_list:
-                    v = latestVersionBefore(response.updated_object, attr, response.request.timestamp)
+                    v = latestVersionBefore(response.request.object[updated_object_index], attr, response.request.timestamp)
                     v.pendingMightRead.remove(response.request.uuid)
 
                     if attr in response.readAttr[updated_object_index]:
@@ -396,7 +404,6 @@ class Coordinator(process):
 
                 logger.error("[Coord] Inner conflict detected for {0}"
                     .format(response.request.uuid))
-        
 
                 restart(response, (updated_object_index), is_prediction_correct)
 
@@ -407,5 +414,3 @@ class Coordinator(process):
                 .format(response.request.uuid))
 
             restart(response, (updated_object_index), is_prediction_correct)
-
-        

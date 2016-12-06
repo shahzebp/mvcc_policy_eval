@@ -26,6 +26,8 @@ Testing scenarios
 8)  Stress testing: Consecutive 200 write requests. All of them are successful
 	and the database dump shows 200 versions appended in the end
 
+9) 	Failed acces: Access fails due to invalid attribute value.
+
 Performance Evaluation:
 
 We did the performance evaluation with the stress test itself described above. We did the

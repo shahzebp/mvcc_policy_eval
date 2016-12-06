@@ -9,6 +9,9 @@
     <object id="11">
         <attribute position= "employee" history="bank B"/>
     </object>
+    <object id="12">
+        <attribute position= "stranger" history=""/>
+    </object>
     <object id = "67">
         <attribute position="expert" history=""/>
     </object>

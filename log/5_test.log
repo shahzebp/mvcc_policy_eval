@@ -1,0 +1,427 @@
+2016-12-05 19:36:33,295 - INFO - Policy Evaluation Engine Configuration :
+2016-12-05 19:36:33,295 - INFO - Total coordinators:    2 
+2016-12-05 19:36:33,296 - INFO - Workers per coordinator:    2 
+2016-12-05 19:36:33,296 - INFO - Database init file:    config/initFile.xml 
+2016-12-05 19:36:33,296 - INFO - Log conf file:     config/log.conf 
+2016-12-05 19:36:33,296 - INFO - Log dump file:    5_test.log 
+2016-12-05 19:36:33,296 - INFO - Log level: 10 
+2016-12-05 19:36:33,296 - INFO - Number of clients:    2 
+2016-12-05 19:36:33,296 - INFO - Min DB Latency:    1 
+2016-12-05 19:36:33,297 - INFO - Max DB Latency:    4 
+
+2016-12-05 19:36:33,820 - INFO - [Client 1] Request sent (UUID: a6583e763b82697250b27949bc6097c1) to object 0 Coord
+2016-12-05 19:36:33,820 - DEBUG - [Client 1] Request sent (seq. 1) to object 0 Coord 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: None                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+
+2016-12-05 19:36:33,822 - INFO - [Coord 0] Request received (UUID: a6583e763b82697250b27949bc6097c1) from Client
+2016-12-05 19:36:33,823 - DEBUG - [Coord 0] Request received (seq. 1) from Client: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: None                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+
+2016-12-05 19:36:33,823 - INFO - [Coord] Releasing request a6583e763b82697250b27949bc6097c1
+
+2016-12-05 19:36:33,823 - INFO - [Coord 0] Sending request (UUID: a6583e763b82697250b27949bc6097c1) to Coord 1 
+2016-12-05 19:36:33,823 - DEBUG - [Coord 0] Sending request (seq. 1) to Coord 1: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+
+2016-12-05 19:36:33,827 - INFO - [Coord 1] Request received (UUID: a6583e763b82697250b27949bc6097c1) from Coord 0
+2016-12-05 19:36:33,827 - DEBUG - [Coord 1] Request received (seq. 1) from  Coord 0: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+
+2016-12-05 19:36:33,827 - INFO - [Coord 1] Sending request (UUID: a6583e763b82697250b27949bc6097c1) to Worker
+2016-12-05 19:36:33,828 - DEBUG - [Coord 1] Sending request (seq. 1) to Worker: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+
+2016-12-05 19:36:33,829 - INFO - [Worker] Receiving request (UUID: a6583e763b82697250b27949bc6097c1) from Coordinator 1
+2016-12-05 19:36:33,830 - DEBUG - [Worker] Receiving request (seq. 1) from Coordinator 1: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+
+2016-12-05 19:36:33,830 - INFO - [Worker] Sending request (UUID: a6583e763b82697250b27949bc6097c1) to Database Emulator
+2016-12-05 19:36:33,830 - DEBUG - [Worker] Sending request (seq. 1) to Database Emulator: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+
+2016-12-05 19:36:33,832 - INFO - [Database Emulator] Receiving request (UUID: a6583e763b82697250b27949bc6097c1) from Worker
+2016-12-05 19:36:33,832 - DEBUG - [Database Emulator] Receiving request (seq. 1) from Worker: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+
+2016-12-05 19:36:33,832 - INFO - [Database Emulator] Sending database response (UUID: a6583e763b82697250b27949bc6097c1) to Worker
+2016-12-05 19:36:33,832 - DEBUG - [Database Emulator] Sending database response (seq. 1) to Worker: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+Object 1 DB Attributes: {'position': 'expert', 'history': ''}                  
+Object 2 DB Attributes: {'name': 'counter_strike'}                  
+Result False                  
+
+2016-12-05 19:36:33,834 - INFO - [Worker] Receiving response (UUID: a6583e763b82697250b27949bc6097c1) from Database Emulator
+2016-12-05 19:36:33,834 - DEBUG - [Worker] Receiving response (seq. 2) from Database Emulator: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+Object 1 DB Attributes: {'position': 'expert', 'history': ''}                  
+Object 2 DB Attributes: {'name': 'counter_strike'}                  
+Result False                  
+
+2016-12-05 19:36:33,922 - INFO - [Client 2] Request sent (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) to object 0 Coord
+2016-12-05 19:36:33,923 - DEBUG - [Client 2] Request sent (seq. 1) to object 0 Coord 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: None                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+
+2016-12-05 19:36:33,930 - INFO - [Coord 0] Request received (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) from Client
+2016-12-05 19:36:33,930 - DEBUG - [Coord 0] Request received (seq. 2) from Client: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: None                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+
+2016-12-05 19:36:33,932 - INFO - [Coord] Releasing request 21ead3c98be9e52cbf2655dd8ce071c8
+
+2016-12-05 19:36:33,932 - INFO - [Coord 0] Sending request (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) to Coord 1 
+2016-12-05 19:36:33,933 - DEBUG - [Coord 0] Sending request (seq. 2) to Coord 1: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+
+2016-12-05 19:36:33,938 - INFO - [Coord 1] Request received (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) from Coord 0
+2016-12-05 19:36:33,939 - DEBUG - [Coord 1] Request received (seq. 2) from  Coord 0: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+
+2016-12-05 19:36:33,939 - INFO - [Coord 1] Sending request (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) to Worker
+2016-12-05 19:36:33,940 - DEBUG - [Coord 1] Sending request (seq. 2) to Worker: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+
+2016-12-05 19:36:33,945 - INFO - [Worker] Receiving request (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) from Coordinator 1
+2016-12-05 19:36:33,947 - DEBUG - [Worker] Receiving request (seq. 1) from Coordinator 1: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+
+2016-12-05 19:36:33,948 - INFO - [Worker] Sending request (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) to Database Emulator
+2016-12-05 19:36:33,948 - DEBUG - [Worker] Sending request (seq. 1) to Database Emulator: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+
+2016-12-05 19:36:33,952 - INFO - [Database Emulator] Receiving request (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) from Worker
+2016-12-05 19:36:33,953 - DEBUG - [Database Emulator] Receiving request (seq. 2) from Worker: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+
+2016-12-05 19:36:33,954 - INFO - [Database Emulator] Sending database response (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) to Worker
+2016-12-05 19:36:33,954 - DEBUG - [Database Emulator] Sending database response (seq. 2) to Worker: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+Object 1 DB Attributes: {'position': 'expert', 'history': ''}                  
+Object 2 DB Attributes: {'name': 'counter_strike'}                  
+Result False                  
+
+2016-12-05 19:36:33,959 - INFO - [Worker] Receiving response (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) from Database Emulator
+2016-12-05 19:36:33,960 - DEBUG - [Worker] Receiving response (seq. 2) from Database Emulator: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+Object 1 DB Attributes: {'position': 'expert', 'history': ''}                  
+Object 2 DB Attributes: {'name': 'counter_strike'}                  
+Result False                  
+
+2016-12-05 19:36:33,966 - INFO - [Coord] Coorindator Session ID. ab697fac-9ae4-4e8e-99d2-639add5be1cf and Worker Session ID: cd6420f8-3972-43a2-b9a6-2f1a6ffc0881
+2016-12-05 19:36:33,967 - INFO - [Coord] Response received (UUID. 21ead3c98be9e52cbf2655dd8ce071c8) from Worker
+2016-12-05 19:36:33,968 - DEBUG - [Coord] Response received (seq. 3) from Worker: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+Result: True                 
+updated_object: 67                 
+read_only_object: 44420                 
+readAttr: [['position', 'history'], ['name']]                 
+updates: {'history': 'counter_strike'}                 
+
+2016-12-05 19:36:38,847 - INFO - [Coord] Response received (UUID. a6583e763b82697250b27949bc6097c1) from <Worker:44006>
+2016-12-05 19:36:38,848 - INFO - [Client] Final Response received (UUID: a6583e763b82697250b27949bc6097c1) from object1 Coord With Result: True
+2016-12-05 19:36:38,848 - DEBUG - [Coord] Response received (seq. 4) from <Worker:44006>: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+Result: True                 
+updated_object: -1                 
+read_only_object: -1                 
+readAttr: [['position'], ['name']]                 
+updates: {}                 
+
+2016-12-05 19:36:38,849 - DEBUG - [Client] Response received (seq. 2) from object1 Coord 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+Result: True                 
+updated_object: -1                 
+read_only_object: -1                 
+readAttr: [['position'], ['name']]                 
+updates: {}                 
+
+2016-12-05 19:36:38,848 - INFO - [Coord] Response received (UUID. a6583e763b82697250b27949bc6097c1) from <Worker:44006>
+2016-12-05 19:36:38,850 - DEBUG - [Coord] Response received (seq. 3) from <Worker:44006>: 
+Objects: [67, 44420]                 
+Action: read                 
+Object_type: ['player', 'game']                 
+Client: <Client:44005>                 
+TimeStamp: 1480984593.8236291                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: a6583e763b82697250b27949bc6097c1                     
+Result: True                 
+updated_object: -1                 
+read_only_object: -1                 
+readAttr: [['position'], ['name']]                 
+updates: {}                 
+
+2016-12-05 19:36:38,858 - INFO - [Client] Final Response received (UUID: 21ead3c98be9e52cbf2655dd8ce071c8) from object1 Coord With Result: True
+2016-12-05 19:36:38,860 - DEBUG - [Client] Response received (seq. 2) from object1 Coord 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+Result: True                 
+updated_object: 67                 
+read_only_object: 44420                 
+readAttr: [['position', 'history'], ['name']]                 
+updates: {'history': 'counter_strike'}                 
+
+2016-12-05 19:36:38,861 - INFO - [Coord] Response received (UUID. 21ead3c98be9e52cbf2655dd8ce071c8) from <Coordinator:44003>
+2016-12-05 19:36:38,862 - DEBUG - [Coord] Response received (seq. 4) from <Coordinator:44003>: 
+Objects: [67, 44420]                 
+Action: write                 
+Object_type: ['player', 'game']                 
+Client: <Client:44006>                 
+TimeStamp: 1480984593.9327059                 
+defReadAttr: [['position', 'history'], ['name']]                 
+mightReadAttr: [[], []]                 
+mightWriteAttr: [['history'], ['name']]                 
+cached_updates: [{}, {}]                 
+UUID: 21ead3c98be9e52cbf2655dd8ce071c8                     
+Result: True                 
+updated_object: 67                 
+read_only_object: 44420                 
+readAttr: [['position', 'history'], ['name']]                 
+updates: {'history': 'counter_strike'}                 
+
+2016-12-05 19:36:38,863 - INFO - [Database Emulator] Dumping database contents to log file
+{   '10': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '11': {'history': [('bank B', 0)], 'position': [('employee', 0)]},
+    '44401': {'name': [('bank A', 0)]},
+    '44402': {'name': [('bank B', 0)]},
+    '44403': {'viewcount': [('0', 0)]},
+    '44409': {'issued': [('0', 0)]},
+    '44420': {'name': [('counter_strike', 0)]},
+    '55': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '56': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '57': {'age': [('24', 0)], 'position': [('customer', 0)]},
+    '67': {'history': [('', 0)], 'position': [('expert', 0)]},
+    '9': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '98': {'position': [('student', 0)]}}
+2016-12-05 19:36:38,866 - DEBUG - [Database Emulator] Receiving updates for 67 from coordinator to commit to db
+
+2016-12-05 19:36:38,872 - INFO - [Database Emulator] Dumping database contents to log file
+{   '10': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '11': {'history': [('bank B', 0)], 'position': [('employee', 0)]},
+    '44401': {'name': [('bank A', 0)]},
+    '44402': {'name': [('bank B', 0)]},
+    '44403': {'viewcount': [('0', 0)]},
+    '44409': {'issued': [('0', 0)]},
+    '44420': {'name': [('counter_strike', 0)]},
+    '55': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '56': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '57': {'age': [('24', 0)], 'position': [('customer', 0)]},
+    '67': {   'history': [('', 0), ('counter_strike', 1480984593.9327059)],
+              'position': [('expert', 0)]},
+    '9': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '98': {'position': [('student', 0)]}}

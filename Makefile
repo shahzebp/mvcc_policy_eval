@@ -11,5 +11,5 @@ clean:
 	-@ rm -rf log/* log/.*.swp
 
 run:
-	-@ rm -rf log/* log/.*.swp
+	-@ rm -rf log/.*.swp
 	dar --message-buffer-size 8192 src/master.da $(ARG)

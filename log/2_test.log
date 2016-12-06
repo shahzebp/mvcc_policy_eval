@@ -1,0 +1,428 @@
+2016-12-05 19:34:23,122 - INFO - Policy Evaluation Engine Configuration :
+2016-12-05 19:34:23,123 - INFO - Total coordinators:    2 
+2016-12-05 19:34:23,123 - INFO - Workers per coordinator:    2 
+2016-12-05 19:34:23,123 - INFO - Database init file:    config/initFile.xml 
+2016-12-05 19:34:23,124 - INFO - Log conf file:     config/log.conf 
+2016-12-05 19:34:23,124 - INFO - Log dump file:    2_test.log 
+2016-12-05 19:34:23,124 - INFO - Log level: 10 
+2016-12-05 19:34:23,124 - INFO - Number of clients:    2 
+2016-12-05 19:34:23,125 - INFO - Min DB Latency:    1 
+2016-12-05 19:34:23,125 - INFO - Max DB Latency:    4 
+
+2016-12-05 19:34:23,551 - INFO - [Client 1] Request sent (UUID: 74fa0f7535c215d28be5ea207dbf050d) to object 0 Coord
+2016-12-05 19:34:23,552 - DEBUG - [Client 1] Request sent (seq. 1) to object 0 Coord 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: None                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+
+2016-12-05 19:34:23,554 - INFO - [Coord 0] Request received (UUID: 74fa0f7535c215d28be5ea207dbf050d) from Client
+2016-12-05 19:34:23,555 - DEBUG - [Coord 0] Request received (seq. 1) from Client: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: None                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+
+2016-12-05 19:34:23,555 - INFO - [Coord] Releasing request 74fa0f7535c215d28be5ea207dbf050d
+
+2016-12-05 19:34:23,555 - INFO - [Coord 0] Sending request (UUID: 74fa0f7535c215d28be5ea207dbf050d) to Coord 1 
+2016-12-05 19:34:23,555 - DEBUG - [Coord 0] Sending request (seq. 1) to Coord 1: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+
+2016-12-05 19:34:23,558 - INFO - [Coord 1] Request received (UUID: 74fa0f7535c215d28be5ea207dbf050d) from Coord 0
+2016-12-05 19:34:23,559 - DEBUG - [Coord 1] Request received (seq. 1) from  Coord 0: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+
+2016-12-05 19:34:23,559 - INFO - [Coord 1] Sending request (UUID: 74fa0f7535c215d28be5ea207dbf050d) to Worker
+2016-12-05 19:34:23,559 - DEBUG - [Coord 1] Sending request (seq. 1) to Worker: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+
+2016-12-05 19:34:23,561 - INFO - [Worker] Receiving request (UUID: 74fa0f7535c215d28be5ea207dbf050d) from Coordinator 1
+2016-12-05 19:34:23,562 - DEBUG - [Worker] Receiving request (seq. 1) from Coordinator 1: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+
+2016-12-05 19:34:23,562 - INFO - [Worker] Sending request (UUID: 74fa0f7535c215d28be5ea207dbf050d) to Database Emulator
+2016-12-05 19:34:23,562 - DEBUG - [Worker] Sending request (seq. 1) to Database Emulator: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+
+2016-12-05 19:34:23,566 - INFO - [Database Emulator] Receiving request (UUID: 74fa0f7535c215d28be5ea207dbf050d) from Worker
+2016-12-05 19:34:23,566 - DEBUG - [Database Emulator] Receiving request (seq. 1) from Worker: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+
+2016-12-05 19:34:23,567 - INFO - [Database Emulator] Sending database response (UUID: 74fa0f7535c215d28be5ea207dbf050d) to Worker
+2016-12-05 19:34:23,567 - DEBUG - [Database Emulator] Sending database response (seq. 1) to Worker: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+Object 1 DB Attributes: {'history': '', 'position': 'employee'}                  
+Object 2 DB Attributes: {'name': 'bank A'}                  
+Result False                  
+
+2016-12-05 19:34:23,568 - INFO - [Worker] Receiving response (UUID: 74fa0f7535c215d28be5ea207dbf050d) from Database Emulator
+2016-12-05 19:34:23,568 - DEBUG - [Worker] Receiving response (seq. 2) from Database Emulator: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+Object 1 DB Attributes: {'history': '', 'position': 'employee'}                  
+Object 2 DB Attributes: {'name': 'bank A'}                  
+Result False                  
+
+2016-12-05 19:34:23,652 - INFO - [Client 2] Request sent (UUID: d777360039fbae6ee18537e7e878d93e) to object 1 Coord
+2016-12-05 19:34:23,653 - DEBUG - [Client 2] Request sent (seq. 1) to object 1 Coord 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: None                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+
+2016-12-05 19:34:23,658 - INFO - [Coord 1] Request received (UUID: d777360039fbae6ee18537e7e878d93e) from Client
+2016-12-05 19:34:23,659 - DEBUG - [Coord 1] Request received (seq. 2) from Client: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: None                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+
+2016-12-05 19:34:23,660 - INFO - [Coord] Releasing request d777360039fbae6ee18537e7e878d93e
+
+2016-12-05 19:34:23,661 - INFO - [Coord 1] Sending request (UUID: d777360039fbae6ee18537e7e878d93e) to Coord 0 
+2016-12-05 19:34:23,662 - DEBUG - [Coord 1] Sending request (seq. 2) to Coord 0: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+
+2016-12-05 19:34:23,667 - INFO - [Coord 0] Request received (UUID: d777360039fbae6ee18537e7e878d93e) from Coord 1
+2016-12-05 19:34:23,668 - DEBUG - [Coord 0] Request received (seq. 2) from  Coord 1: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+
+2016-12-05 19:34:23,668 - INFO - [Coord 0] Sending request (UUID: d777360039fbae6ee18537e7e878d93e) to Worker
+2016-12-05 19:34:23,669 - DEBUG - [Coord 0] Sending request (seq. 2) to Worker: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+
+2016-12-05 19:34:23,674 - INFO - [Worker] Receiving request (UUID: d777360039fbae6ee18537e7e878d93e) from Coordinator 0
+2016-12-05 19:34:23,676 - DEBUG - [Worker] Receiving request (seq. 1) from Coordinator 0: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+
+2016-12-05 19:34:23,676 - INFO - [Worker] Sending request (UUID: d777360039fbae6ee18537e7e878d93e) to Database Emulator
+2016-12-05 19:34:23,677 - DEBUG - [Worker] Sending request (seq. 1) to Database Emulator: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+
+2016-12-05 19:34:23,681 - INFO - [Database Emulator] Receiving request (UUID: d777360039fbae6ee18537e7e878d93e) from Worker
+2016-12-05 19:34:23,682 - DEBUG - [Database Emulator] Receiving request (seq. 2) from Worker: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+
+2016-12-05 19:34:23,683 - INFO - [Database Emulator] Sending database response (UUID: d777360039fbae6ee18537e7e878d93e) to Worker
+2016-12-05 19:34:23,683 - DEBUG - [Database Emulator] Sending database response (seq. 2) to Worker: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+Object 1 DB Attributes: {'history': '', 'position': 'employee'}                  
+Object 2 DB Attributes: {'name': 'bank A'}                  
+Result False                  
+
+2016-12-05 19:34:23,687 - INFO - [Worker] Receiving response (UUID: d777360039fbae6ee18537e7e878d93e) from Database Emulator
+2016-12-05 19:34:23,688 - DEBUG - [Worker] Receiving response (seq. 2) from Database Emulator: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+Object 1 DB Attributes: {'history': '', 'position': 'employee'}                  
+Object 2 DB Attributes: {'name': 'bank A'}                  
+Result False                  
+
+2016-12-05 19:34:23,694 - INFO - [Coord] Coorindator Session ID. 536caad9-dae3-4ea0-ad9f-b33a0c5445da and Worker Session ID: 536caad9-dae3-4ea0-ad9f-b33a0c5445da
+2016-12-05 19:34:23,695 - INFO - [Coord] Response received (UUID. d777360039fbae6ee18537e7e878d93e) from Worker
+2016-12-05 19:34:23,696 - DEBUG - [Coord] Response received (seq. 3) from Worker: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+Result: True                 
+updated_object: 10                 
+read_only_object: 44401                 
+readAttr: [['history', 'position'], ['name']]                 
+updates: {'history': 'bank A'}                 
+
+2016-12-05 19:34:28,582 - INFO - [Coord] Response received (UUID. 74fa0f7535c215d28be5ea207dbf050d) from <Worker:03005>
+2016-12-05 19:34:28,582 - INFO - [Client] Final Response received (UUID: 74fa0f7535c215d28be5ea207dbf050d) from object1 Coord With Result: True
+2016-12-05 19:34:28,585 - DEBUG - [Coord] Response received (seq. 4) from <Worker:03005>: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+Result: True                 
+updated_object: -1                 
+read_only_object: -1                 
+readAttr: [['history', 'position'], ['name']]                 
+updates: {}                 
+
+2016-12-05 19:34:28,586 - INFO - [Coord] Response received (UUID. 74fa0f7535c215d28be5ea207dbf050d) from <Worker:03005>
+2016-12-05 19:34:28,586 - DEBUG - [Client] Response received (seq. 2) from object1 Coord 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+Result: True                 
+updated_object: -1                 
+read_only_object: -1                 
+readAttr: [['history', 'position'], ['name']]                 
+updates: {}                 
+
+2016-12-05 19:34:28,587 - DEBUG - [Coord] Response received (seq. 3) from <Worker:03005>: 
+Objects: [10, 44401]                 
+Action: read                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03005>                 
+TimeStamp: 1480984463.5555112                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], []]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: 74fa0f7535c215d28be5ea207dbf050d                     
+Result: True                 
+updated_object: -1                 
+read_only_object: -1                 
+readAttr: [['history', 'position'], ['name']]                 
+updates: {}                 
+
+2016-12-05 19:34:28,591 - DEBUG - [Database Emulator] Receiving updates for 10 from coordinator to commit to db
+
+2016-12-05 19:34:28,595 - INFO - [Client] Final Response received (UUID: d777360039fbae6ee18537e7e878d93e) from object1 Coord With Result: True
+2016-12-05 19:34:28,596 - DEBUG - [Client] Response received (seq. 2) from object1 Coord 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+Result: True                 
+updated_object: 10                 
+read_only_object: 44401                 
+readAttr: [['history', 'position'], ['name']]                 
+updates: {'history': 'bank A'}                 
+
+2016-12-05 19:34:28,599 - INFO - [Database Emulator] Dumping database contents to log file
+{   '10': {   'history': [('', 0), ('bank A', 1480984463.660898)],
+              'position': [('employee', 0)]},
+    '11': {'history': [('bank B', 0)], 'position': [('employee', 0)]},
+    '44401': {'name': [('bank A', 0)]},
+    '44402': {'name': [('bank B', 0)]},
+    '44403': {'viewcount': [('0', 0)]},
+    '44409': {'issued': [('0', 0)]},
+    '44420': {'name': [('counter_strike', 0)]},
+    '55': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '56': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '57': {'age': [('24', 0)], 'position': [('customer', 0)]},
+    '67': {'history': [('', 0)], 'position': [('expert', 0)]},
+    '9': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '98': {'position': [('student', 0)]}}
+2016-12-05 19:34:28,601 - INFO - [Coord] Response received (UUID. d777360039fbae6ee18537e7e878d93e) from <Coordinator:03003>
+2016-12-05 19:34:28,602 - DEBUG - [Coord] Response received (seq. 4) from <Coordinator:03003>: 
+Objects: [10, 44401]                 
+Action: write                 
+Object_type: ['person', 'bank']                 
+Client: <Client:03006>                 
+TimeStamp: 1480984463.660898                 
+defReadAttr: [['position'], ['name']]                 
+mightReadAttr: [['history'], ['account']]                 
+mightWriteAttr: [['history'], []]                 
+cached_updates: [{}, {}]                 
+UUID: d777360039fbae6ee18537e7e878d93e                     
+Result: True                 
+updated_object: 10                 
+read_only_object: 44401                 
+readAttr: [['history', 'position'], ['name']]                 
+updates: {'history': 'bank A'}                 
+
+2016-12-05 19:34:28,607 - INFO - [Database Emulator] Dumping database contents to log file
+{   '10': {   'history': [('', 0), ('bank A', 1480984463.660898)],
+              'position': [('employee', 0)]},
+    '11': {'history': [('bank B', 0)], 'position': [('employee', 0)]},
+    '44401': {'name': [('bank A', 0)]},
+    '44402': {'name': [('bank B', 0)]},
+    '44403': {'viewcount': [('0', 0)]},
+    '44409': {'issued': [('0', 0)]},
+    '44420': {'name': [('counter_strike', 0)]},
+    '55': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '56': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '57': {'age': [('24', 0)], 'position': [('customer', 0)]},
+    '67': {'history': [('', 0)], 'position': [('expert', 0)]},
+    '9': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '98': {'position': [('student', 0)]}}

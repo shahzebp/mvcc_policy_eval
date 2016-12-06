@@ -1,0 +1,574 @@
+2016-12-05 19:35:52,238 - INFO - Policy Evaluation Engine Configuration :
+2016-12-05 19:35:52,239 - INFO - Total coordinators:    2 
+2016-12-05 19:35:52,239 - INFO - Workers per coordinator:    2 
+2016-12-05 19:35:52,239 - INFO - Database init file:    config/initFile.xml 
+2016-12-05 19:35:52,239 - INFO - Log conf file:     config/log.conf 
+2016-12-05 19:35:52,240 - INFO - Log dump file:    4_test.log 
+2016-12-05 19:35:52,240 - INFO - Log level: 10 
+2016-12-05 19:35:52,240 - INFO - Number of clients:    2 
+2016-12-05 19:35:52,240 - INFO - Min DB Latency:    1 
+2016-12-05 19:35:52,240 - INFO - Max DB Latency:    4 
+
+2016-12-05 19:35:52,719 - INFO - [Client 1] Request sent (UUID: 02c9528410af05d07a23a4e1acd722d4) to object 0 Coord
+2016-12-05 19:35:52,720 - DEBUG - [Client 1] Request sent (seq. 1) to object 0 Coord 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: None                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:52,722 - INFO - [Coord 0] Request received (UUID: 02c9528410af05d07a23a4e1acd722d4) from Client
+2016-12-05 19:35:52,722 - DEBUG - [Coord 0] Request received (seq. 1) from Client: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: None                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:52,722 - INFO - [Coord] Releasing request 02c9528410af05d07a23a4e1acd722d4
+
+2016-12-05 19:35:52,722 - INFO - [Coord 0] Sending request (UUID: 02c9528410af05d07a23a4e1acd722d4) to Coord 1 
+2016-12-05 19:35:52,723 - DEBUG - [Coord 0] Sending request (seq. 1) to Coord 1: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:52,725 - INFO - [Coord 1] Request received (UUID: 02c9528410af05d07a23a4e1acd722d4) from Coord 0
+2016-12-05 19:35:52,726 - DEBUG - [Coord 1] Request received (seq. 1) from  Coord 0: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:52,726 - INFO - [Coord 1] Sending request (UUID: 02c9528410af05d07a23a4e1acd722d4) to Worker
+2016-12-05 19:35:52,726 - DEBUG - [Coord 1] Sending request (seq. 1) to Worker: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:52,727 - INFO - [Worker] Receiving request (UUID: 02c9528410af05d07a23a4e1acd722d4) from Coordinator 1
+2016-12-05 19:35:52,728 - DEBUG - [Worker] Receiving request (seq. 1) from Coordinator 1: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:52,728 - INFO - [Worker] Sending request (UUID: 02c9528410af05d07a23a4e1acd722d4) to Database Emulator
+2016-12-05 19:35:52,728 - DEBUG - [Worker] Sending request (seq. 1) to Database Emulator: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:52,730 - INFO - [Database Emulator] Receiving request (UUID: 02c9528410af05d07a23a4e1acd722d4) from Worker
+2016-12-05 19:35:52,730 - DEBUG - [Database Emulator] Receiving request (seq. 1) from Worker: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:52,730 - INFO - [Database Emulator] Sending database response (UUID: 02c9528410af05d07a23a4e1acd722d4) to Worker
+2016-12-05 19:35:52,730 - DEBUG - [Database Emulator] Sending database response (seq. 1) to Worker: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+Object 1 DB Attributes: {'position': 'customer', 'age': '22'}                  
+Object 2 DB Attributes: {'viewcount': '0'}                  
+Result False                  
+
+2016-12-05 19:35:52,732 - INFO - [Worker] Receiving response (UUID: 02c9528410af05d07a23a4e1acd722d4) from Database Emulator
+2016-12-05 19:35:52,732 - DEBUG - [Worker] Receiving response (seq. 2) from Database Emulator: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+Object 1 DB Attributes: {'position': 'customer', 'age': '22'}                  
+Object 2 DB Attributes: {'viewcount': '0'}                  
+Result False                  
+
+2016-12-05 19:35:52,819 - INFO - [Client 2] Request sent (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) to object 0 Coord
+2016-12-05 19:35:52,820 - DEBUG - [Client 2] Request sent (seq. 1) to object 0 Coord 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: None                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+
+2016-12-05 19:35:52,823 - INFO - [Coord 0] Request received (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) from Client
+2016-12-05 19:35:52,824 - DEBUG - [Coord 0] Request received (seq. 2) from Client: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: None                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+
+2016-12-05 19:35:52,825 - INFO - [Coord] Releasing request ecbb4a650ce03fa1eb3bd02bdb67b2bb
+
+2016-12-05 19:35:52,826 - INFO - [Coord 0] Sending request (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) to Coord 1 
+2016-12-05 19:35:52,827 - DEBUG - [Coord 0] Sending request (seq. 2) to Coord 1: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+
+2016-12-05 19:35:52,833 - INFO - [Coord 1] Request received (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) from Coord 0
+2016-12-05 19:35:52,834 - DEBUG - [Coord 1] Request received (seq. 2) from  Coord 0: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+
+2016-12-05 19:35:52,834 - INFO - [Coord 1] Sending request (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) to Worker
+2016-12-05 19:35:52,835 - DEBUG - [Coord 1] Sending request (seq. 2) to Worker: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+
+2016-12-05 19:35:52,840 - INFO - [Worker] Receiving request (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) from Coordinator 1
+2016-12-05 19:35:52,842 - DEBUG - [Worker] Receiving request (seq. 1) from Coordinator 1: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+
+2016-12-05 19:35:52,843 - INFO - [Worker] Sending request (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) to Database Emulator
+2016-12-05 19:35:52,843 - DEBUG - [Worker] Sending request (seq. 1) to Database Emulator: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+
+2016-12-05 19:35:52,847 - INFO - [Database Emulator] Receiving request (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) from Worker
+2016-12-05 19:35:52,848 - DEBUG - [Database Emulator] Receiving request (seq. 2) from Worker: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+
+2016-12-05 19:35:52,849 - INFO - [Database Emulator] Sending database response (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) to Worker
+2016-12-05 19:35:52,849 - DEBUG - [Database Emulator] Sending database response (seq. 2) to Worker: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+Object 1 DB Attributes: {'position': 'customer', 'age': '22'}                  
+Object 2 DB Attributes: {'viewcount': '0'}                  
+Result False                  
+
+2016-12-05 19:35:52,854 - INFO - [Worker] Receiving response (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) from Database Emulator
+2016-12-05 19:35:52,855 - DEBUG - [Worker] Receiving response (seq. 2) from Database Emulator: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+Object 1 DB Attributes: {'position': 'customer', 'age': '22'}                  
+Object 2 DB Attributes: {'viewcount': '0'}                  
+Result False                  
+
+2016-12-05 19:35:54,741 - INFO - [Coord] Coorindator Session ID. bc722d4b-9f32-497a-8669-6bebd306660e and Worker Session ID: bc722d4b-9f32-497a-8669-6bebd306660e
+2016-12-05 19:35:54,742 - INFO - [Coord] Response received (UUID. 02c9528410af05d07a23a4e1acd722d4) from Worker
+2016-12-05 19:35:54,742 - DEBUG - [Coord] Response received (seq. 3) from Worker: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+Result: True                 
+updated_object: 44403                 
+read_only_object: 56                 
+readAttr: [['position'], ['viewcount']]                 
+updates: {'viewcount': '1'}                 
+
+2016-12-05 19:35:56,868 - INFO - [Coord] Response received (UUID. ecbb4a650ce03fa1eb3bd02bdb67b2bb) from <Worker:1c805>
+2016-12-05 19:35:56,869 - DEBUG - [Coord] Response received (seq. 3) from <Worker:1c805>: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+Result: True                 
+updated_object: -1                 
+read_only_object: -1                 
+readAttr: [['position'], ['viewcount']]                 
+updates: {}                 
+
+2016-12-05 19:35:56,869 - INFO - [Client] Final Response received (UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb) from object1 Coord With Result: True
+2016-12-05 19:35:56,870 - INFO - [Coord] Response received (UUID. ecbb4a650ce03fa1eb3bd02bdb67b2bb) from <Worker:1c805>
+2016-12-05 19:35:56,870 - DEBUG - [Coord] Response received (seq. 4) from <Worker:1c805>: 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+Result: True                 
+updated_object: -1                 
+read_only_object: -1                 
+readAttr: [['position'], ['viewcount']]                 
+updates: {}                 
+
+2016-12-05 19:35:56,871 - DEBUG - [Client] Response received (seq. 2) from object1 Coord 
+Objects: [56, 44403]                 
+Action: read                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c805>                 
+TimeStamp: 1480984552.8261554                 
+defReadAttr: [[], []]                 
+mightReadAttr: [['position'], ['viewcount']]                 
+mightWriteAttr: [[], []]                 
+cached_updates: [{}, {}]                 
+UUID: ecbb4a650ce03fa1eb3bd02bdb67b2bb                     
+Result: True                 
+updated_object: -1                 
+read_only_object: -1                 
+readAttr: [['position'], ['viewcount']]                 
+updates: {}                 
+
+2016-12-05 19:35:56,871 - ERROR - Conflict detected for request 02c9528410af05d07a23a4e1acd722d4
+
+2016-12-05 19:35:56,872 - ERROR - [Coord] Inner conflict detected for 02c9528410af05d07a23a4e1acd722d4
+2016-12-05 19:35:56,872 - INFO - [Coord 1] Restarting request (UUID: 02c9528410af05d07a23a4e1acd722d4) to Coord 0 
+2016-12-05 19:35:56,877 - INFO - [Coord 0] Request received (UUID: 02c9528410af05d07a23a4e1acd722d4) from Client
+2016-12-05 19:35:56,878 - DEBUG - [Coord 0] Request received (seq. 4) from Client: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984552.7229269                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:56,878 - INFO - [Coord] Releasing request 02c9528410af05d07a23a4e1acd722d4
+
+2016-12-05 19:35:56,879 - INFO - [Coord 0] Sending request (UUID: 02c9528410af05d07a23a4e1acd722d4) to Coord 1 
+2016-12-05 19:35:56,880 - DEBUG - [Coord 0] Sending request (seq. 3) to Coord 1: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:56,880 - INFO - [Database Emulator] Dumping database contents to log file
+{   '10': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '11': {'history': [('bank B', 0)], 'position': [('employee', 0)]},
+    '44401': {'name': [('bank A', 0)]},
+    '44402': {'name': [('bank B', 0)]},
+    '44403': {'viewcount': [('0', 0)]},
+    '44409': {'issued': [('0', 0)]},
+    '44420': {'name': [('counter_strike', 0)]},
+    '55': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '56': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '57': {'age': [('24', 0)], 'position': [('customer', 0)]},
+    '67': {'history': [('', 0)], 'position': [('expert', 0)]},
+    '9': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '98': {'position': [('student', 0)]}}
+2016-12-05 19:35:56,884 - INFO - [Coord 1] Request received (UUID: 02c9528410af05d07a23a4e1acd722d4) from Coord 0
+2016-12-05 19:35:56,885 - DEBUG - [Coord 1] Request received (seq. 5) from  Coord 0: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:56,885 - INFO - [Coord 1] Sending request (UUID: 02c9528410af05d07a23a4e1acd722d4) to Worker
+2016-12-05 19:35:56,886 - DEBUG - [Coord 1] Sending request (seq. 3) to Worker: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:56,890 - INFO - [Worker] Receiving request (UUID: 02c9528410af05d07a23a4e1acd722d4) from Coordinator 1
+2016-12-05 19:35:56,891 - DEBUG - [Worker] Receiving request (seq. 3) from Coordinator 1: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:56,891 - INFO - [Worker] Sending request (UUID: 02c9528410af05d07a23a4e1acd722d4) to Database Emulator
+2016-12-05 19:35:56,892 - DEBUG - [Worker] Sending request (seq. 2) to Database Emulator: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:56,896 - INFO - [Database Emulator] Receiving request (UUID: 02c9528410af05d07a23a4e1acd722d4) from Worker
+2016-12-05 19:35:56,897 - DEBUG - [Database Emulator] Receiving request (seq. 3) from Worker: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+
+2016-12-05 19:35:56,897 - INFO - [Database Emulator] Sending database response (UUID: 02c9528410af05d07a23a4e1acd722d4) to Worker
+2016-12-05 19:35:56,898 - DEBUG - [Database Emulator] Sending database response (seq. 3) to Worker: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+Object 1 DB Attributes: {'position': 'customer', 'age': '22'}                  
+Object 2 DB Attributes: {'viewcount': '0'}                  
+Result False                  
+
+2016-12-05 19:35:56,901 - INFO - [Worker] Receiving response (UUID: 02c9528410af05d07a23a4e1acd722d4) from Database Emulator
+2016-12-05 19:35:56,902 - DEBUG - [Worker] Receiving response (seq. 4) from Database Emulator: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+Object 1 DB Attributes: {'position': 'customer', 'age': '22'}                  
+Object 2 DB Attributes: {'viewcount': '0'}                  
+Result False                  
+
+2016-12-05 19:35:58,910 - INFO - [Coord] Coorindator Session ID. bc722d4b-9f32-497a-8669-6bebd306660e and Worker Session ID: bc722d4b-9f32-497a-8669-6bebd306660e
+2016-12-05 19:35:58,910 - INFO - [Coord] Response received (UUID. 02c9528410af05d07a23a4e1acd722d4) from Worker
+2016-12-05 19:35:58,911 - DEBUG - [Coord] Response received (seq. 6) from Worker: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+Result: True                 
+updated_object: 44403                 
+read_only_object: 56                 
+readAttr: [['position'], ['viewcount']]                 
+updates: {'viewcount': '1'}                 
+
+2016-12-05 19:35:58,917 - DEBUG - [Database Emulator] Receiving updates for 44403 from coordinator to commit to db
+
+2016-12-05 19:35:58,918 - INFO - [Client] Final Response received (UUID: 02c9528410af05d07a23a4e1acd722d4) from object1 Coord With Result: True
+2016-12-05 19:35:58,919 - INFO - [Coord] Response received (UUID. 02c9528410af05d07a23a4e1acd722d4) from <Coordinator:1c804>
+2016-12-05 19:35:58,919 - DEBUG - [Client] Response received (seq. 2) from object1 Coord 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+Result: True                 
+updated_object: 44403                 
+read_only_object: 56                 
+readAttr: [['position'], ['viewcount']]                 
+updates: {'viewcount': '1'}                 
+
+2016-12-05 19:35:58,920 - DEBUG - [Coord] Response received (seq. 5) from <Coordinator:1c804>: 
+Objects: [56, 44403]                 
+Action: write                 
+Object_type: ['viewer', 'movie']                 
+Client: <Client:1c806>                 
+TimeStamp: 1480984556.8793948                 
+defReadAttr: [[], []]                 
+mightReadAttr: [[], ['viewcount']]                 
+mightWriteAttr: [[], ['viewcount']]                 
+cached_updates: [{}, {}]                 
+UUID: 02c9528410af05d07a23a4e1acd722d4                     
+Result: True                 
+updated_object: 44403                 
+read_only_object: 56                 
+readAttr: [['position'], ['viewcount']]                 
+updates: {'viewcount': '1'}                 
+
+2016-12-05 19:35:58,925 - INFO - [Database Emulator] Dumping database contents to log file
+{   '10': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '11': {'history': [('bank B', 0)], 'position': [('employee', 0)]},
+    '44401': {'name': [('bank A', 0)]},
+    '44402': {'name': [('bank B', 0)]},
+    '44403': {'viewcount': [('0', 0), ('1', 1480984556.8793948)]},
+    '44409': {'issued': [('0', 0)]},
+    '44420': {'name': [('counter_strike', 0)]},
+    '55': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '56': {'age': [('22', 0)], 'position': [('customer', 0)]},
+    '57': {'age': [('24', 0)], 'position': [('customer', 0)]},
+    '67': {'history': [('', 0)], 'position': [('expert', 0)]},
+    '9': {'history': [('', 0)], 'position': [('employee', 0)]},
+    '98': {'position': [('student', 0)]}}
